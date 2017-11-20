@@ -14,6 +14,7 @@ import sajas.core.Agent;
 
 public class StockAgent extends Agent {
 	private ArrayList<Stock> stockHistory = new ArrayList<Stock>();		// historico de acoes extraido de google finance
+	private Stock actualStockValue;
 	
 	class Stock
 	{
@@ -77,14 +78,29 @@ public class StockAgent extends Agent {
                 Stock st = new Stock(date, open, close);
                 stockHistory.add(st);
 
-                System.out.println(" [day = " + st.day + " , month = " + st.month + 
-                		" , year = " + st.year + " , value = " + st.value + "]");
-
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-		
+        Collections.reverse(stockHistory);
+        
+        actualStockValue = stockHistory.get(0);		// stock history starts on day one
+	}
+
+	public ArrayList<Stock> getStockHistory() {
+		return stockHistory;
+	}
+
+	public void setStockHistory(ArrayList<Stock> stockHistory) {
+		this.stockHistory = stockHistory;
+	}
+
+	public Stock getActualStockValue() {
+		return actualStockValue;
+	}
+
+	public void setActualStockValue(Stock actualStockValue) {
+		this.actualStockValue = actualStockValue;
 	}
 }

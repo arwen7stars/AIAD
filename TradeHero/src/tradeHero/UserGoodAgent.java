@@ -20,6 +20,7 @@ public class UserGoodAgent extends UserAgent {
 		dfd.addProtocols(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
 		ServiceDescription sd = new ServiceDescription();
 		sd.setName(getLocalName() + "-service-provider");
+		System.out.println(getLocalName());
 		sd.setType("service-provider");
 		dfd.addServices(sd);
 		try {

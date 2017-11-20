@@ -20,13 +20,10 @@ package tradeHero
 import java.io.*
 import java.math.*
 import java.util.*
-
 import javax.measure.unit.*
-
 import org.jscience.mathematics.number.*
 import org.jscience.mathematics.vector.*
 import org.jscience.physics.amount.*
-
 import repast.simphony.adaptation.neural.*
 import repast.simphony.adaptation.regression.*
 import repast.simphony.context.*
@@ -97,6 +94,7 @@ public class ModelInitializer  {
      *
      */
     public def initializeModel() {
+
         // Define the return value variable.
         def returnValue
 

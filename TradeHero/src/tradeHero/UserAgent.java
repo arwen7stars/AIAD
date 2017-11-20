@@ -1,10 +1,9 @@
 package tradeHero;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import sajas.core.Agent;
+import tradeHero.StockAgent.Stock;
 
 public class UserAgent extends Agent {
 	/*
@@ -58,5 +57,27 @@ public class UserAgent extends Agent {
 	public void setStocksOwned(Map<Agent, Integer> stocks_owned) {
 		this.stocksOwned = stocks_owned;
 	}
+	
+	public void buyStocks(StockAgent market, Integer noStocks) {
+		Stock actualStock = market.getActualStockValue();
+		double value = actualStock.value;
+		double boughtValue = noStocks * value;
+		
+		cash = cash - boughtValue;						// atualizar dinheiro do utilizador
+		stocksOwned.put(market, noStocks);				// atualizar array de stocks que possuí no momento
+	}
 
+	public void sellStocks(StockAgent market, Integer noStocks) {
+		Stock actualStock = market.getActualStockValue();
+		double value = actualStock.value;
+		double soldValue = noStocks * value;
+		
+		cash = cash + soldValue;						// atualizar dinheiro do utilizador
+	    for(Iterator<Map.Entry<Agent, Integer>> it = stocksOwned.entrySet().iterator(); it.hasNext(); ) {
+	        Map.Entry<Agent, Integer> entry = it.next();
+	        if(entry.getKey().equals(market)) {
+	          it.remove();
+	        }
+	        }
+	}
 }
