@@ -1,20 +1,20 @@
 package tradeHero;
 
-import jade.lang.acl.ACLMessage;
+import sajas.core.Agent;
 import sajas.core.behaviours.CyclicBehaviour;
+import jade.lang.acl.ACLMessage;
 
-public class UserGoodAgent extends UserAgent {
+public class Receiver extends Agent 
+{
+	private static final long serialVersionUID = 1L;
 	
-	public UserGoodAgent() {
-		super();
-	}
-	
+	public Receiver() {}
+
 	@Override
-	public void setup() {
-		super.commonSetup();
-		
+	public void setup() 
+    {        
 		addBehaviour(new ResultsListener());
-	}
+    }
 	
 	private class ResultsListener extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
@@ -28,5 +28,4 @@ public class UserGoodAgent extends UserAgent {
 			block();
         }
     }
-
 }

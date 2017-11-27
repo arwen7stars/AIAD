@@ -1,6 +1,7 @@
 package tradeHero;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -13,9 +14,9 @@ import sajas.wrapper.ContainerController;
 import tradeHero.StockAgent.Stock;
 
 public class TradeHeroLauncher extends RepastSLauncher {
-	private static int N_NORMAL_USERS = 70;
-	private static int N_GOOD_USERS = 20;
-	private static int N_RANDOM_USERS = 10;
+	private static int N_NORMAL_USERS = 5;
+	private static int N_GOOD_USERS = 5;
+	private static int N_RANDOM_USERS = 5;
 	
 	private ContainerController mainContainer;
 	private ContainerController agentContainer;
@@ -51,26 +52,37 @@ public class TradeHeroLauncher extends RepastSLauncher {
 			StockAgent st = new StockAgent();
 			st.readHistory("goog.csv");
 			
-			ArrayList<Stock> stockHistory = st.getStockHistory();
+			st.updateStockValue();
+			Stock actualStockValue = st.getActualStockValue().stock;
+			System.out.println(" [day = " + actualStockValue.day + " , month = " + actualStockValue.month + 
+            		" , year = " + actualStockValue.year + " , value = " + actualStockValue.value + "]");
 			
-			for(int i = 0; i < stockHistory.size(); i++) {
-                System.out.println(" [day = " + stockHistory.get(i).day + " , month = " + stockHistory.get(i).month + 
-                		" , year = " + stockHistory.get(i).year + " , value = " + stockHistory.get(i).value + "]");
-			}
-			Stock actualStock = st.getActualStockValue();
-			System.out.println("ACTUAL STOCK [day = " + actualStock.day + " , month = " + actualStock.month + 
-                		" , year = " + actualStock.year + " , value = " + actualStock.value + "]");
+			
+			//ArrayList<Stock> market = st.getStockHistory();
+			
+			/*for (Map.Entry<String, ArrayList<Stock>> entry : market.entrySet()) {
+			    String company = entry.getKey();
+			    ArrayList<Stock> stockHistory = entry.getValue();
+			    
+			    System.out.println("Company: " + company);
+				for(int i = 0; i < stockHistory.size(); i++) {
+	                System.out.println(" [day = " + stockHistory.get(i).day + " , month = " + stockHistory.get(i).month + 
+	                		" , year = " + stockHistory.get(i).year + " , value = " + stockHistory.get(i).value + "]");
+				}
+			}*/
+			
+			Receiver results = new Receiver();
+			mainContainer.acceptNewAgent("ResultsCollector", results).start();
 			
 			mainContainer.acceptNewAgent("Stock" + 1, st).start();
 			
-			
 			// create users
 			// good users
-			/*for (int i = 0; i < N_GOOD_USERS; i++) {
+			for (int i = 0; i < N_GOOD_USERS; i++) {
 				UserGoodAgent us = new UserGoodAgent();
 				agentContainer.acceptNewAgent("GoodUser" + i, us).start();
-			}*/
-			/*
+			}
+			
 			// normal users
 			for (int i = 0; i < N_NORMAL_USERS; i++) {
 				UserNormalAgent us = new UserNormalAgent();
@@ -82,13 +94,6 @@ public class TradeHeroLauncher extends RepastSLauncher {
 				UserRandomAgent us = new UserRandomAgent();
 				agentContainer.acceptNewAgent("RandomUser" + i, us).start();
 			}
-
-			// create stocks
-			for (int i = 0; i < N_STOCKS; i++) {
-				StockAgent st = new StockAgent();
-				mainContainer.acceptNewAgent("Stock" + i, st).start();
-			}*/
-
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
