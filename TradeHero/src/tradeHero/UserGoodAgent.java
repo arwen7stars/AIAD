@@ -12,22 +12,6 @@ public class UserGoodAgent extends UserAgent {
 		super();
 	}
 	
-	@Override
-	public void setup() {
-		// register provider at DF
-		DFAgentDescription dfd = new DFAgentDescription();
-		dfd.setName(getAID());
-		dfd.addProtocols(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-		ServiceDescription sd = new ServiceDescription();
-		sd.setName(getLocalName() + "-service-provider");
-		System.out.println(getLocalName());
-		sd.setType("service-provider");
-		dfd.addServices(sd);
-		try {
-			DFService.register(this, dfd);
-		} catch (FIPAException e) {
-			System.err.println(e.getMessage());
-		}
-	}
+	
 
 }

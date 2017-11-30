@@ -2,7 +2,11 @@ package tradeHero;
 
 import java.util.*;
 
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import sajas.core.Agent;
+import sajas.domain.DFService;
 import tradeHero.StockAgent.Stock;
 
 public class UserAgent extends Agent {
@@ -14,7 +18,7 @@ public class UserAgent extends Agent {
 	private int followers;														// numero de seguidores determina quanto o utilizador vai receber de premiacao
 	private double gain_rate;													// media de ganhos
 	private ArrayList<Agent> following = new ArrayList<Agent>();				// se o utilizador seguir alguem, vai receber "dicas" de investimento desse utilizador
-	private Map<Agent, Integer> stocksOwned = new HashMap<Agent, Integer>();	// numero de stocks possuídos e de que empresas foram comprados
+	private Map<Agent, Integer> stocksOwned = new HashMap<Agent, Integer>();	// numero de stocks possuï¿½dos e de que empresas foram comprados
 	
 	public UserAgent() {}
 
@@ -64,7 +68,7 @@ public class UserAgent extends Agent {
 		double boughtValue = noStocks * value;
 		
 		cash = cash - boughtValue;						// atualizar dinheiro do utilizador
-		stocksOwned.put(market, noStocks);				// atualizar array de stocks que possuí no momento
+		stocksOwned.put(market, noStocks);				// atualizar array de stocks que possuï¿½ no momento
 	}
 
 	public void sellStocks(StockAgent market, Integer noStocks) {
@@ -80,4 +84,27 @@ public class UserAgent extends Agent {
 	        }
 	        }
 	}
+	
+	@Override
+	public void setup() {
+		
+		// Register the book-selling service in the yellow pages
+		DFAgentDescription dfd = new DFAgentDescription();
+		dfd.setName(getAID());
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("buyers");
+		sd.setName(getLocalName());
+		dfd.addServices(sd);
+		try {
+			DFService.register(this, dfd);
+		}
+		catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+
+	}
+	
+	class receiveSomething {}
+	
+	
 }

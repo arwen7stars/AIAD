@@ -12,7 +12,7 @@ public class UserNormalAgent extends UserAgent {
 		super();
 	}
 	
-	@Override
+	/*@Override
 	public void setup() {
 		// register provider at DF
 		DFAgentDescription dfd = new DFAgentDescription();
@@ -27,5 +27,5 @@ public class UserNormalAgent extends UserAgent {
 		} catch (FIPAException e) {
 			System.err.println(e.getMessage());
 		}
-	}
+	}*/
 }

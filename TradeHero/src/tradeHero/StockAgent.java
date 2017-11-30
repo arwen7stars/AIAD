@@ -1,23 +1,33 @@
 package tradeHero;
 
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import sajas.core.Agent;
+import sajas.core.behaviours.CyclicBehaviour;
+import sajas.domain.DFService;
 
 public class StockAgent extends Agent {
-	private ArrayList<Stock> stockHistory = new ArrayList<Stock>();		// historico de acoes extraido de google finance
+	private Map<String, Stock> stockHistory = new HashMap<String, Stock>();		// historico de acoes extraido de google finance
 	private Stock actualStockValue;
+	private String name ="";
 	
-	class Stock
+	public class Stock
 	{
+			
 	    public int day;
 	    public int month;
 	    public int year;
@@ -47,9 +57,15 @@ public class StockAgent extends Agent {
 	        cal.setTime(date);
 	        this.month = cal.get(Calendar.MONTH) + 1;
 	    }
+	    
+	    public double getValue() {
+	    	return this.value;
+	    }
+	    
+	    
 	 };
 	
-	public StockAgent() {}
+	public StockAgent(String name) {this.name = name;}
 	
 	@Override
 	public void setup() {
@@ -57,8 +73,19 @@ public class StockAgent extends Agent {
 		// subscribe DF
 		DFAgentDescription template = new DFAgentDescription();
 		ServiceDescription sd = new ServiceDescription();
-		sd.setType("service-provider");
+		sd.setType("stock");
+		sd.setName(getLocalName());
 		template.addServices(sd);
+		
+		try {
+			DFService.register(this, template);
+		}
+		catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+		
+		addBehaviour(new StockInformationServer());
+		
 		
 	}
 	
@@ -76,23 +103,23 @@ public class StockAgent extends Agent {
                 String close = stockValue[4];
                 
                 Stock st = new Stock(date, open, close);
-                stockHistory.add(st);
+                stockHistory.put(date, st);
 
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Collections.reverse(stockHistory);
+        //Collections.reverse(stockHistory);
         
         actualStockValue = stockHistory.get(0);		// stock history starts on day one
 	}
 
-	public ArrayList<Stock> getStockHistory() {
+	public Map<String, Stock> getStockHistory() {
 		return stockHistory;
 	}
 
-	public void setStockHistory(ArrayList<Stock> stockHistory) {
+	public void setStockHistory(Map<String, Stock> stockHistory) {
 		this.stockHistory = stockHistory;
 	}
 
@@ -103,4 +130,43 @@ public class StockAgent extends Agent {
 	public void setActualStockValue(Stock actualStockValue) {
 		this.actualStockValue = actualStockValue;
 	}
+	
+	
+	private class StockInformationServer extends CyclicBehaviour {
+		public void action() {
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+			ACLMessage msg = myAgent.receive(mt);
+			if (msg != null) {
+				
+				System.out.println("Hi Market");
+				
+				String date = msg.getContent();
+				ACLMessage reply = msg.createReply();
+				reply.setPerformative(ACLMessage.INFORM);
+				
+				Stock st = stockHistory.get(date); 
+				if (st != null) {
+					
+					reply.setContent(name +  "&" + st.getValue());
+					System.out.println("Stoke-agent "+getAID().getName()+": sent: " + reply.toString());
+				}
+				else {
+					// The requested book has been sold to another buyer in the meanwhile .
+					
+					reply.setContent("error");
+				}
+				myAgent.send(reply);
+			}
+			else {
+				block();
+			}
+		}
+	}  // End of inner class OfferRequestsServer
+
+	
+	
+	
+	
+	
+	
 }

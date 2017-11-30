@@ -1,12 +1,13 @@
 package tradeHero;
 
-import java.util.ArrayList;
+import java.util.Map;
 
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.graph.NetworkBuilder;
+import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
 import sajas.wrapper.ContainerController;
@@ -48,28 +49,31 @@ public class TradeHeroLauncher extends RepastSLauncher {
 
 	private void launchAgents() {
 		try {			
-			StockAgent st = new StockAgent();
+			StockAgent st = new StockAgent("goog");
 			st.readHistory("goog.csv");
 			
-			ArrayList<Stock> stockHistory = st.getStockHistory();
+		 	Map<String, Stock> stockHistory = st.getStockHistory();
 			
-			for(int i = 0; i < stockHistory.size(); i++) {
-                System.out.println(" [day = " + stockHistory.get(i).day + " , month = " + stockHistory.get(i).month + 
-                		" , year = " + stockHistory.get(i).year + " , value = " + stockHistory.get(i).value + "]");
-			}
-			Stock actualStock = st.getActualStockValue();
-			System.out.println("ACTUAL STOCK [day = " + actualStock.day + " , month = " + actualStock.month + 
-                		" , year = " + actualStock.year + " , value = " + actualStock.value + "]");
+			/*for(Map.Entry<String, Stock> entry : stockHistory.entrySet()) {
+			    String key = entry.getKey();
+			    System.out.println(key);
+
+			    // do what you have to do here
+			    // In your case, another loop.
+			}*/
+			
 			
 			mainContainer.acceptNewAgent("Stock" + 1, st).start();
 			
+			Market mt = new Market();
+			mainContainer.acceptNewAgent("Market", mt).start();
 			
 			// create users
 			// good users
-			/*for (int i = 0; i < N_GOOD_USERS; i++) {
+			for (int i = 0; i < N_GOOD_USERS; i++) {
 				UserGoodAgent us = new UserGoodAgent();
 				agentContainer.acceptNewAgent("GoodUser" + i, us).start();
-			}*/
+			}
 			/*
 			// normal users
 			for (int i = 0; i < N_NORMAL_USERS; i++) {
