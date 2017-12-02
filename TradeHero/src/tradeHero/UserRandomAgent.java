@@ -5,6 +5,7 @@ import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import sajas.domain.DFService;
+import tradeHero.behaviours.ReceiveStockUpdate;
 
 public class UserRandomAgent extends UserAgent {
 
@@ -12,20 +13,45 @@ public class UserRandomAgent extends UserAgent {
 		super();
 	}
 	
-/*	@Override
+	
+	@Override
 	public void setup() {
-		// register provider at DF
+		
+		// Register the book-selling service in the yellow pages
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
-		dfd.addProtocols(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
 		ServiceDescription sd = new ServiceDescription();
-		sd.setName(getLocalName() + "-service-provider");
-		sd.setType("service-provider");
+		sd.setType("buyers");
+		sd.setName(getLocalName());
 		dfd.addServices(sd);
 		try {
 			DFService.register(this, dfd);
-		} catch (FIPAException e) {
-			System.err.println(e.getMessage());
 		}
-	}*/
+		catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+		
+		addBehaviour(new ReceiveStockUpdateAgent());
+	}
+	
+	
+	class ReceiveStockUpdateAgent extends ReceiveStockUpdate {
+
+		@Override
+		public void buyerAction() {
+			/* Implementação do comportamento do agente após receber a informação sobre o valor das ações 
+			 * 		Atributos:	
+			 * 			today: 						String
+			 * 			stoksPrice<Stock> :	 		ArrayList<Stock> com nome da stock e valor
+			*/	
+
+			
+			
+		}
+		
+		
+		
+		}
+		
+	
 }

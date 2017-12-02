@@ -11,11 +11,11 @@ import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
 import sajas.wrapper.ContainerController;
-import tradeHero.StockAgent.Stock;
+import structures.Stock;
 
 public class TradeHeroLauncher extends RepastSLauncher {
 	private static int N_NORMAL_USERS = 70;
-	private static int N_GOOD_USERS = 20;
+	private static int N_GOOD_USERS = 3;
 	private static int N_RANDOM_USERS = 10;
 	
 	private ContainerController mainContainer;
@@ -65,7 +65,13 @@ public class TradeHeroLauncher extends RepastSLauncher {
 			
 			mainContainer.acceptNewAgent("Stock" + 1, st).start();
 			
-			Market mt = new Market();
+			StockAgent st2 = new StockAgent("atlas");
+			st2.readHistory("goog.csv");
+			mainContainer.acceptNewAgent("Stock2", st2).start();
+			
+			Market mt = null;
+			mt = new Market();
+			
 			mainContainer.acceptNewAgent("Market", mt).start();
 			
 			// create users
@@ -94,6 +100,9 @@ public class TradeHeroLauncher extends RepastSLauncher {
 			}*/
 
 		} catch (StaleProxyException e) {
+			e.printStackTrace();
+		} catch(Exception e){
+			 
 			e.printStackTrace();
 		}
 	}

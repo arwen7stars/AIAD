@@ -2,12 +2,19 @@ package tradeHero;
 
 import java.util.*;
 
+import javax.media.j3d.Behavior;
+
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import sajas.core.Agent;
+import sajas.core.behaviours.Behaviour;
+import sajas.core.behaviours.CyclicBehaviour;
 import sajas.domain.DFService;
-import tradeHero.StockAgent.Stock;
+import structures.Stock;
+import tradeHero.behaviours.ReceiveStockUpdate;
 
 public class UserAgent extends Agent {
 	/*
@@ -85,26 +92,15 @@ public class UserAgent extends Agent {
 	        }
 	}
 	
-	@Override
-	public void setup() {
-		
-		// Register the book-selling service in the yellow pages
-		DFAgentDescription dfd = new DFAgentDescription();
-		dfd.setName(getAID());
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType("buyers");
-		sd.setName(getLocalName());
-		dfd.addServices(sd);
-		try {
-			DFService.register(this, dfd);
-		}
-		catch (FIPAException fe) {
-			fe.printStackTrace();
-		}
-
-	}
 	
-	class receiveSomething {}
+	
+	
+		
+		
+
+		
+		
+	
 	
 	
 }

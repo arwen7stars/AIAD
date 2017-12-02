@@ -12,6 +12,7 @@ import sajas.core.Agent;
 import sajas.core.behaviours.Behaviour;
 import sajas.core.behaviours.TickerBehaviour;
 import sajas.domain.DFService;
+import tradeHero.behaviours.UpdateStokes;
 
 public class Market extends Agent {
 	
@@ -23,16 +24,22 @@ public class Market extends Agent {
 	public static int this_day = 3;
 	public static int this_month = 11;
 	public static int this_year = 16;
+	public static Market This = null;
 	
-	
-	Market() { super(); }
+	Market() throws Exception { 
+		super();
+		if(This != null)
+			throw new Exception("Only one market can be created");
+		 
+		This = this;
+	}
 	
 	protected void setup() {
 		System.out.println("Hallo! Market-agent "+getAID().getName()+" is ready.");
 		
 		addBehaviour(new TickerBehaviour(this, 10*1000) {
 			protected void onTick() {
-				 
+				 System.out.println("-----------------------------------------------------------------------------------------------------------");
 				// Update the list of seller agents
 				DFAgentDescription template = new DFAgentDescription();
 				DFAgentDescription template2 = new DFAgentDescription();
@@ -55,7 +62,7 @@ public class Market extends Agent {
 					}
 					
 					result = DFService.search(myAgent, template2);
-					//System.out.println("Market-agent "+getAID().getName()+":"+"Found the following stoke agents:");
+					//System.out.println("Market-agent "+getAID().getName()+":"+"Found the following user agents:");
 					userAgents = new AID[result.length];
 					for(int i = 0; i < result.length; ++i) {
 						userAgents[i] = result[i].getName();
@@ -68,7 +75,7 @@ public class Market extends Agent {
 				}
 
 				// Perform the request
-				myAgent.addBehaviour(new updateStokes());
+				myAgent.addBehaviour(new UpdateStokes(This));
 			}
 		} );
 
@@ -80,85 +87,7 @@ public class Market extends Agent {
 		System.out.println("Market-agent "+getAID().getName()+" terminating.");
 	}
 	
-	public class updateStokes extends Behaviour {
-		private int step = 0;
-		private MessageTemplate mt;
-		private int repliesCnt = 0;
-		private ArrayList<String> stokeValues = new ArrayList<String>();
-		
-		@Override
-		public void action() {
-			
-			
-			
-			// TODO Auto-generated method stub
-			switch(step) {
-			case 0:
-				
-				System.out.println("Im here!");
-				
-				// Send a request to all stokes
-				ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
-				
-				for(int i = 0; i < stokeAgents.length; i++) {
-					request.addReceiver(stokeAgents[i]);
-					
-				}
-				System.out.println("today: " + today());
-				request.setContent(today());
-				request.setConversationId("stoke-value");
-				request.setReplyWith("request" + System.currentTimeMillis());
-				myAgent.send(request);
-				
-				mt = MessageTemplate.and(MessageTemplate.MatchConversationId("stoke-value"),MessageTemplate.MatchInReplyTo(request.getReplyWith()));
-				
-				step = 1;
-				
-				System.out.println("I sent the message to: " + stokeAgents.length);
-				
-				break;			
-			
-			
-			case 1:
-				
-				System.out.println("Im Still here!");
-				
-				ACLMessage reply = myAgent.receive(mt);
-				if(reply != null) {
-					if(reply.getPerformative() == ACLMessage.INFORM) {
-						String stokePrice = reply.getContent(); // stockName&value
-						stokeValues.add(stokePrice);
-						repliesCnt++;
-						
-						System.out.println("received: " + stokePrice);
-						
-						if(repliesCnt >= stokeAgents.length) {
-							step = 2;
-						}
-						
-					}
-					
-					
-				}else {
-					block();
-				}
-				
-				break;
-			}
-			
-		}
-
-		@Override
-		public boolean done() {
-			// TODO Auto-generated method stub
-			if(step == 2) {
-				return false;
-			}
-			nextDay();
-			return true;
-		}
-		
-	}
+	
 		
 	
 	public static String today() {
@@ -169,9 +98,9 @@ public class Market extends Agent {
 	public static String nextDay() {
 				
 		this_day++;
-		System.out.println("wtf");
+		 
 		if(((this_day - 1) % monthsTotal[this_month - 1]) == 0) {
-			if(this_month == 11) {
+			if(this_month == 12) {
 				this_year++;
 				this_day = 1;
 				this_month = 1;
@@ -182,6 +111,17 @@ public class Market extends Agent {
 		}		
 		return today();
 	}
+
+	public AID[] getStokeAgents() {
+		// TODO Auto-generated method stub
+		return this.stokeAgents;
+	}
+
+	public AID[] getUserAgents() {
+		// TODO Auto-generated method stub
+		return this.userAgents;
+	}
+
 	
 	
 
