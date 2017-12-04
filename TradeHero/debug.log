@@ -305,3 +305,17 @@ java.lang.NullPointerException
 	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
 	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
 	at java.lang.Thread.run(Thread.java:748)
+FATAL [Thread-4] 2017-12-04 11:35:36,652 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (7576727.0)
+java.lang.NullPointerException
+	at tradeHero.UserRandomAgent$ReceiveStockUpdateAgent.buyerAction(UserRandomAgent.java:70)
+	at tradeHero.behaviours.ReceiveStockUpdate.action(ReceiveStockUpdate.java:44)
+	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
+	at sajas.core.Agent.step(Agent.java:205)
+	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Thread.java:748)

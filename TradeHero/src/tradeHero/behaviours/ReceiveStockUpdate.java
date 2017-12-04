@@ -23,9 +23,7 @@ public abstract class ReceiveStockUpdate extends CyclicBehaviour {
 				MessageTemplate.MatchConversationId("stoke-value"));
 				
 		ACLMessage msg = myAgent.receive(mt);
-		
-		
-		
+				
 	
 		if(msg != null) {
 			
@@ -53,7 +51,21 @@ public abstract class ReceiveStockUpdate extends CyclicBehaviour {
 		
 	}
 	
-	public abstract void buyerAction() ;
+	public abstract void buyerAction();
 	
-
+	/* Informs followers about today's purchases/sales */
+	public void alertFollowers(String s) {
+		/* Common to all users */
+	}
+	
+	/* Informs Market  */
+	public void updateGain(double gain) {
+		/* Common to all users */
+		
+		
+	}
+	
+	
+	
+	
 }

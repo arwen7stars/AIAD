@@ -12,6 +12,8 @@ public class ReceiveTip extends CyclicBehaviour{
 	
 	private UserGoodAgent This;
 	
+	
+	
 	public ReceiveTip(UserGoodAgent uga) {
 		super();
 		This = uga;
@@ -41,4 +43,7 @@ public class ReceiveTip extends CyclicBehaviour{
 		
 		
 	}
+	
+	
+	
 }

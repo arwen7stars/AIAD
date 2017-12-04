@@ -37,7 +37,7 @@ public class Market extends Agent {
 	protected void setup() {
 		System.out.println("Hallo! Market-agent "+getAID().getName()+" is ready.");
 		
-		addBehaviour(new TickerBehaviour(this, 10*1000) {
+		addBehaviour(new TickerBehaviour(this, 5*1000) {
 			protected void onTick() {
 				 System.out.println("-----------------------------------------------------------------------------------------------------------");
 				// Update the list of seller agents

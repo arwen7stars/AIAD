@@ -70,6 +70,7 @@ public class StockInformationServer extends CyclicBehaviour {
 					goodAgents[i] = result[i].getName();
 				}
 				
+				/* Seleção */
 				goodAgents = randomCalc.getRandomGoodAgents(goodAgents);
 				
 				ACLMessage tips = new ACLMessage(ACLMessage.INFORM);
@@ -77,7 +78,7 @@ public class StockInformationServer extends CyclicBehaviour {
 					tips.addReceiver( goodAgents[i]);
 					
 				}
-				tips.setContent(getDica());
+				tips.setContent(getDica(date));
 				tips.setConversationId("stoke-tip");
 				myAgent.send(tips);
 				
@@ -97,7 +98,7 @@ public class StockInformationServer extends CyclicBehaviour {
 		}
 	}
 
-	private String getDica() {
+	private String getDica(String today) {
 		// TODO Auto-generated method stub
 		/* Construção da dica, se atraves de maximos e minimos locais: goog&maximo&17-Nov-16*/
 		return "Toma la esta dica\n";

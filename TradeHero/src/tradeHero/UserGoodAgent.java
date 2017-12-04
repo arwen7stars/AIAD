@@ -5,6 +5,7 @@ import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import sajas.domain.DFService;
+import structures.randomCalc;
 import tradeHero.behaviours.ReceiveStockUpdate;
 import tradeHero.behaviours.ReceiveTip;
 
@@ -55,6 +56,11 @@ public class UserGoodAgent extends UserAgent {
 			 * 			today: 						String
 			 * 			stoksPrice<Stock> :	 		ArrayList<Stock> com nome da stock e valor
 			*/	
+			if(randomCalc.buyAction()) {
+				
+			}
+			
+			
 			
 		}
 		

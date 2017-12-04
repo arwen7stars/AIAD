@@ -37,8 +37,7 @@ public class UpdateStokes extends Behaviour {
 		switch(step) {
 		case 0:
 			
-			 
-			
+						
 			// Send a request to all stokes
 			ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
 			

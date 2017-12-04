@@ -76,23 +76,24 @@ public class TradeHeroLauncher extends RepastSLauncher {
 			
 			// create users
 			// good users
+			/*
 			for (int i = 0; i < N_GOOD_USERS; i++) {
 				UserGoodAgent us = new UserGoodAgent();
 				agentContainer.acceptNewAgent("GoodUser" + i, us).start();
 			}
-			/*
+			
 			// normal users
 			for (int i = 0; i < N_NORMAL_USERS; i++) {
 				UserNormalAgent us = new UserNormalAgent();
 				agentContainer.acceptNewAgent("NormalUser" + i, us).start();
 			}
-			
+			*/
 			// random users
 			for (int i = 0; i < N_RANDOM_USERS; i++) {
 				UserRandomAgent us = new UserRandomAgent();
 				agentContainer.acceptNewAgent("RandomUser" + i, us).start();
 			}
-
+/*
 			// create stocks
 			for (int i = 0; i < N_STOCKS; i++) {
 				StockAgent st = new StockAgent();
