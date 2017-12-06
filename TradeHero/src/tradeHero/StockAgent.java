@@ -1,55 +1,34 @@
 package tradeHero;
 
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import sajas.core.Agent;
+import sajas.core.behaviours.CyclicBehaviour;
+import sajas.domain.DFService;
+import structures.Stock;
+import structures.randomCalc;
+import tradeHero.behaviours.StockInformationServer;
 
 public class StockAgent extends Agent {
-	private ArrayList<Stock> stockHistory = new ArrayList<Stock>();		// historico de acoes extraido de google finance
+	private Map<String, Stock> stockHistory = new HashMap<String, Stock>();		// historico de acoes extraido de google finance
 	private Stock actualStockValue;
+	private String name ="";
 	
-	class Stock
-	{
-	    public int day;
-	    public int month;
-	    public int year;
-	    public double value;
-	    
-	    public Stock(String stockDate, String open, String close) {
-	    	this.parseDate(stockDate);
-	    	
-	    	double openInt = Double.parseDouble(open);
-	    	double closeInt = Double.parseDouble(close);
-	    	
-	    	this.value = (openInt + closeInt) / 2;
-	    }
-	    
-	    public void parseDate(String stockDate) {
-	    	String[] parts = stockDate.split("-");
-	    	this.day = Integer.parseInt(parts[0]);	        
-	    	this.year = Integer.parseInt(parts[2]);
-	    	
-	        Date date = null;
-			try {
-				date = new SimpleDateFormat("MMM", Locale.ENGLISH).parse(parts[1]);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-	        Calendar cal = Calendar.getInstance();
-	        cal.setTime(date);
-	        this.month = cal.get(Calendar.MONTH) + 1;
-	    }
-	 };
 	
-	public StockAgent() {}
+	
+	
+	public StockAgent(String name) {this.name = name;}
 	
 	@Override
 	public void setup() {
@@ -57,8 +36,19 @@ public class StockAgent extends Agent {
 		// subscribe DF
 		DFAgentDescription template = new DFAgentDescription();
 		ServiceDescription sd = new ServiceDescription();
-		sd.setType("service-provider");
+		sd.setType("stock");
+		sd.setName(getLocalName());
 		template.addServices(sd);
+		
+		try {
+			DFService.register(this, template);
+		}
+		catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+		
+		addBehaviour(new StockInformationServer(this, stockHistory, name));
+		
 		
 	}
 	
@@ -76,23 +66,23 @@ public class StockAgent extends Agent {
                 String close = stockValue[4];
                 
                 Stock st = new Stock(date, open, close);
-                stockHistory.add(st);
+                stockHistory.put(date, st);
 
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Collections.reverse(stockHistory);
+        //Collections.reverse(stockHistory);
         
         actualStockValue = stockHistory.get(0);		// stock history starts on day one
 	}
 
-	public ArrayList<Stock> getStockHistory() {
+	public Map<String, Stock> getStockHistory() {
 		return stockHistory;
 	}
 
-	public void setStockHistory(ArrayList<Stock> stockHistory) {
+	public void setStockHistory(Map<String, Stock> stockHistory) {
 		this.stockHistory = stockHistory;
 	}
 
@@ -103,4 +93,54 @@ public class StockAgent extends Agent {
 	public void setActualStockValue(Stock actualStockValue) {
 		this.actualStockValue = actualStockValue;
 	}
+
+	public String newTip(String today) {
+		
+		boolean stop = false;
+		
+		boolean unknown = true;
+		boolean dec = false;
+		
+		double maxOrmin =  stockHistory.get(today).getValue();
+		String day = today;
+		
+		 
+		while(true) {
+			
+			String tomorrow = randomCalc.tomorrow(day);
+			double aux = stockHistory.get(tomorrow).getValue();
+			
+			if(unknown && aux < maxOrmin) {
+				unknown = false;
+				dec = true;
+			}else if(unknown) {
+				unknown = false;
+			}
+			
+			
+			if(dec && aux < maxOrmin) {
+				day = tomorrow;
+				
+			}else if (!dec && aux > maxOrmin ) {
+				day = tomorrow;
+			}else {
+				break;
+			}
+			
+			day = tomorrow;
+			maxOrmin = aux;
+			
+		}
+			
+		return getLocalName() + (dec ? "&min&" : "&max&" ) + day + "&" + maxOrmin;
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
 }

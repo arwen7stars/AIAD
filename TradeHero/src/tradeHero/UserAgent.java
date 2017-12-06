@@ -2,19 +2,35 @@ package tradeHero;
 
 import java.util.*;
 
+import javax.media.j3d.Behavior;
+
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import sajas.core.AID;
 import sajas.core.Agent;
-import tradeHero.StockAgent.Stock;
+import sajas.core.behaviours.Behaviour;
+import sajas.core.behaviours.CyclicBehaviour;
+import sajas.domain.DFService;
+import structures.Stock;
+import structures.Tip;
+import tradeHero.behaviours.ReceiveStockUpdate;
 
 public class UserAgent extends Agent {
 	/*
 	 * 	Agent agent = new Agent();
 		agent.getAID();
 	 */
-	private double cash = 100000.0;												// quantidade de dinheiro que o utilizador tem no inicio
-	private int followers;														// numero de seguidores determina quanto o utilizador vai receber de premiacao
-	private double gain_rate;													// media de ganhos
-	private ArrayList<Agent> following = new ArrayList<Agent>();				// se o utilizador seguir alguem, vai receber "dicas" de investimento desse utilizador
-	private Map<Agent, Integer> stocksOwned = new HashMap<Agent, Integer>();	// numero de stocks possuídos e de que empresas foram comprados
+	protected double cash = 100000.0;												// quantidade de dinheiro que o utilizador tem no inicio
+														// numero de seguidores determina quanto o utilizador vai receber de premiacao
+	protected double gain_rate;														// media de ganhos
+	protected ArrayList<AID> followers = new ArrayList<AID>();				    	// se o utilizador seguir alguem, vai receber "dicas" de investimento desse utilizador
+	protected ArrayList<AID> following = new ArrayList<AID>();
+	protected Map<String, Stock> stocksOwned = new HashMap<String, Stock>();	// numero de stocks possuï¿½dos e de que empresas foram comprados
+	protected Map<String, Tip> tips = new HashMap<String, Tip>();
+	
 	
 	public UserAgent() {}
 
@@ -26,21 +42,24 @@ public class UserAgent extends Agent {
 		this.cash = cash;
 	}
 
-	public int getFollowers() {
+	
+
+	public ArrayList<AID> getFollowers() {
 		return followers;
 	}
 
-	public void setFollowers(int followers) {
-		this.followers = followers;
+	public void setFollowers(ArrayList<AID> following) {
+		this.followers = following;
+	}
+	
+	public ArrayList<AID> getFollowing() {
+		return followers;
 	}
 
-	public ArrayList<Agent> getFollowing() {
-		return following;
+	public void setFollowing(ArrayList<AID> following) {
+		this.followers = following;
 	}
-
-	public void setFollowing(ArrayList<Agent> following) {
-		this.following = following;
-	}
+	
 
 	public double getGain_rate() {
 		return gain_rate;
@@ -50,34 +69,93 @@ public class UserAgent extends Agent {
 		this.gain_rate = gain_rate;
 	}
 
-	public Map<Agent, Integer> getStocksOwned() {
+	public Map<String, Stock> getStocksOwned() {
 		return stocksOwned;
 	}
 
-	public void setStocksOwned(Map<Agent, Integer> stocks_owned) {
+	public void setStocksOwned(Map<String, Stock> stocks_owned) {
 		this.stocksOwned = stocks_owned;
 	}
 	
-	public void buyStocks(StockAgent market, Integer noStocks) {
-		Stock actualStock = market.getActualStockValue();
-		double value = actualStock.value;
+	public void buyStocks(String stock, double value, Integer noStocks) {
+		
+		Integer total = 0;
 		double boughtValue = noStocks * value;
 		
-		cash = cash - boughtValue;						// atualizar dinheiro do utilizador
-		stocksOwned.put(market, noStocks);				// atualizar array de stocks que possuí no momento
+			
+		if(cash >= boughtValue) {
+			cash -= boughtValue;
+			
+			if(stocksOwned.containsKey(stock)) {
+				total = stocksOwned.get(stock).getQuantity();
+				double savedValue = stocksOwned.get(stock).getSavedValue();
+				if(savedValue < value)
+					savedValue = value;
+				stocksOwned.put(stock, new Stock(stock, total + noStocks, savedValue));
+						
+			}else {
+				stocksOwned.put(stock, new Stock(stock, noStocks, value));
+						
+			}		
+			
+		}	
+		
+						
 	}
 
-	public void sellStocks(StockAgent market, Integer noStocks) {
-		Stock actualStock = market.getActualStockValue();
-		double value = actualStock.value;
-		double soldValue = noStocks * value;
+	public void sellStocks(String stock, double value, Integer noStocks) {
 		
-		cash = cash + soldValue;						// atualizar dinheiro do utilizador
-	    for(Iterator<Map.Entry<Agent, Integer>> it = stocksOwned.entrySet().iterator(); it.hasNext(); ) {
-	        Map.Entry<Agent, Integer> entry = it.next();
-	        if(entry.getKey().equals(market)) {
-	          it.remove();
+		
+		
+		// atualizar dinheiro do utilizador
+	    for(Map.Entry<String, Stock> it : stocksOwned.entrySet()) {
+	        
+	        if(it.getKey().equals(stock)) {
+	        	
+	        	int stocksLeft = it.getValue().getQuantity() - noStocks;
+	        	cash += noStocks * value;
+	        	
+	        	if(stocksLeft < 0)						// o utilizador nao tem tantas aÃ§Ãµes quanto as que quer vender 
+	        		return;
+	        	if(stocksLeft == 0) {
+	        		stocksOwned.remove(it);
+	        		return;
+	        	}
+	        	it.setValue(new Stock(stock, stocksLeft, it.getValue().getSavedValue()));
+	        	
+	        	
 	        }
-	        }
+	       }
 	}
+	
+	
+	public double gains(ArrayList<Stock> stocksValueToday) {
+		
+		double total = 0.0;
+		
+		for(Stock stock :  stocksValueToday) {
+			
+			String s = stock.getName();
+			
+			if(stocksOwned.containsKey(s))
+				total += stocksOwned.get(s).getQuantity()*stock.getValue();			
+			
+		}
+		
+		
+		return total + this.cash;
+	}
+	
+	
+	
+	
+	
+		
+		
+
+		
+		
+	
+	
+	
 }
