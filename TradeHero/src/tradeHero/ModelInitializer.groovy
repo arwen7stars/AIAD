@@ -123,7 +123,6 @@ public class ModelInitializer  {
 
         // Set the default agent identifier.
         returnValue = this.agentID
-		
         // Return the results.
         return returnValue
 
