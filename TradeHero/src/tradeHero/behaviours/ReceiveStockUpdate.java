@@ -100,7 +100,7 @@ public abstract class ReceiveStockUpdate extends CyclicBehaviour {
 			DFAgentDescription[] result = DFService.search(myAgent, template);
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.addReceiver(result[0].getName());
-			msg.setContent(myAgent.getName() + "&" + gain);
+			msg.setContent(myAgent.getLocalName() + "&" + gain);
 			msg.setConversationId("gains");
 			System.out.println("I," + myAgent.getLocalName() +  ", update my gains with the following message: " + msg.getContent() );
 			myAgent.send(msg);

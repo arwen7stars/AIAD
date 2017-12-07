@@ -105,9 +105,9 @@ public class UserRandomAgent extends UserAgent {
 			}
 			if(!s.equals("")) {
 				alertFollowers(s);
-				updateGain(gains(stocksPrice));
+				
 			}
-			
+			updateGain(gains(stocksPrice));
 			
 			
 			
