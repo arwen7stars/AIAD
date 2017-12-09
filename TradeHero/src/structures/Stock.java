@@ -1,16 +1,18 @@
 package structures;
 
-/*import java.text.ParseException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;*/
+import java.util.Locale;
 
 public class Stock
 {
 	
-	public String name; 					// Stock					
-    public String date;						// Stock
+	public String name; 					// Stock
+    public int day;							
+    public int month;
+    public int year;
     public double value;					// Stock
     public double savedValue = 0.0;			// StockOwned
     public int quantity = 0;				// StockOwned
@@ -36,10 +38,8 @@ public class Stock
     }
     
     public void parseDate(String stockDate) {
-    	this.date = stockDate;
-    	/*String[] parts = stockDate.split("-");
-    	this.day = Integer.parseInt(parts[0]);
-    	this.month = parts[1];
+    	String[] parts = stockDate.split("-");
+    	this.day = Integer.parseInt(parts[0]);	        
     	this.year = Integer.parseInt(parts[2]);
     	
         Date date = null;
@@ -50,7 +50,7 @@ public class Stock
 		}
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        this.month = cal.get(Calendar.MONTH) + 1;*/
+        this.month = cal.get(Calendar.MONTH) + 1;
     }
     
     public double getValue() {

@@ -6,6 +6,8 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import sajas.domain.DFService;
 import structures.randomCalc;
+import tradeHero.behaviours.FollowingServer;
+import tradeHero.behaviours.ReceivePayments;
 import tradeHero.behaviours.ReceiveStockUpdate;
 
 public class UserRandomAgent extends UserAgent {
@@ -33,6 +35,8 @@ public class UserRandomAgent extends UserAgent {
 		}
 		
 		addBehaviour(new ReceiveStockUpdateAgent(this));
+		addBehaviour(new FollowingServer(this));
+		addBehaviour(new ReceivePayments(this));
 	}
 	
 	
@@ -73,7 +77,7 @@ public class UserRandomAgent extends UserAgent {
 					System.out.println("Im " +  myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash);
 					
 					/* 3. Avisar o mercado sobre o ganho atual 			*/
-					s += "buy&" + stock + "&" + noStocks  + "\n";
+					s += "buy&" + stock + "&" + noStocks  +  "&" + stocksPrice.get(i).value + "\n";
 					
 					
 					/* 4. Avisar aos followers que efetuou uma compra 	*/
@@ -96,7 +100,7 @@ public class UserRandomAgent extends UserAgent {
 						
 						System.out.println("Im " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash  + " ; SavedValue: " + stocksOwned.get(stock).getSavedValue());
 						/* 3 Avisar o seguidores que efetuou uma venda */
-						s += "sell&" + stock + "&" + noStocks  + "\n";
+						s += "sell&" + stock + "&" + noStocks  + "&" + stocksPrice.get(i).getValue()  + "\n";
 						
 					}	
 				}

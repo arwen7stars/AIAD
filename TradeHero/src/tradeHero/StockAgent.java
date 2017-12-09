@@ -3,22 +3,18 @@ package tradeHero;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import sajas.core.Agent;
-import sajas.core.behaviours.CyclicBehaviour;
 import sajas.domain.DFService;
 import structures.Stock;
 import structures.randomCalc;
 import tradeHero.behaviours.StockInformationServer;
+import tradeHero.behaviours.stockROC;
 
 public class StockAgent extends Agent {
 	private Map<String, Stock> stockHistory = new HashMap<String, Stock>();		// historico de acoes extraido de google finance
@@ -48,7 +44,7 @@ public class StockAgent extends Agent {
 		}
 		
 		addBehaviour(new StockInformationServer(this, stockHistory, name));
-		
+		addBehaviour(new stockROC(this));
 		
 	}
 	
@@ -94,14 +90,6 @@ public class StockAgent extends Agent {
 		this.actualStockValue = actualStockValue;
 	}
 
-	public String getStockName() {
-		return name;
-	}
-
-	public void setStockName(String name) {
-		this.name = name;
-	}
-
 	public String newTip(String today) {
 		
 		boolean stop = false;
@@ -140,15 +128,10 @@ public class StockAgent extends Agent {
 			
 		}
 			
-		return getStockName() + (dec ? "&min&" : "&max&" ) + day + "&" + maxOrmin;
+		return getLocalName() + (dec ? "&min&" : "&max&" ) + day + "&" + maxOrmin;
 	}
 	
-
-	
-	
-	
-	
-	
+		
 	
 	
 }
