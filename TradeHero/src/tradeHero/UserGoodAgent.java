@@ -1,16 +1,33 @@
 package tradeHero;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import sajas.domain.DFService;
+import structures.Stock;
+import structures.Tip;
 import structures.randomCalc;
+import tradeHero.UserRandomAgent.ReceiveStockUpdateAgent;
+import tradeHero.behaviours.FollowingServer;
+import tradeHero.behaviours.ReceivePayments;
 import tradeHero.behaviours.ReceiveStockUpdate;
 import tradeHero.behaviours.ReceiveTip;
 
-public class UserGoodAgent extends UserAgent {
-	
+public class UserGoodAgent extends UserAgent {	
+	public static final double GOOD_AGENTS_MAX_BUY_ACTION_PROB = 0.1;
+	public static final double GOOD_AGENTS_MIN_BUY_ACTION_PROB = 0.9;
+	public static final double GOOD_AGENTS_MAX_SELL_ACTION_PROB = 0.9;
+	public static final double GOOD_AGENTS_MIN_SELL_ACTION_PROB = 0.1;
+
 	public UserGoodAgent() {
 		super();
 	}
@@ -45,19 +62,22 @@ public class UserGoodAgent extends UserAgent {
 		
 		addBehaviour(new ReceiveStockUpdateAgent(this));
 		addBehaviour(new ReceiveTip(this));
+		addBehaviour(new FollowingServer(this));
+		addBehaviour(new ReceivePayments(this));
+		
 	}
 	
 	
 	class ReceiveStockUpdateAgent extends ReceiveStockUpdate {
-
+		
 		ReceiveStockUpdateAgent(UserAgent agent) {
 			super(agent);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
 		public void buyerAction() {
-			/* Implementação do comportamento do agente após receber a informação sobre o valor das ações 
+			System.out.println("GOOD ACTION");
+			/* Implementacao do comportamento do agente apos receber a informacao sobre o valor das acoes 
 			 * 		Atributos:	
 			 * 			today: 						String
 			 * 			stoksPrice<Stock> :	 		ArrayList<Stock> com nome da stock e valor
@@ -68,50 +88,113 @@ public class UserGoodAgent extends UserAgent {
 			String s = "";
 			
 			for(int i = 0; i < stocksPrice.size(); i++) {
-				String stock = stocksPrice.get(i).getName();
+				boolean buyStocks = false;
+				Stock stock = stocksPrice.get(i);
+				int noStocks = -1;
 				
-				if(buyAction(stock)) {
-					
-					
+				if(cash > stock.getValue()) {
+					if((noStocks = buyAction(stock, noStocks)) > -1) {
+						s += "buy&" + stock.getName() + "&" + noStocks  +  "&" + stock.getValue() + "\n" ;
+						buyStocks = true;
+					}
+				}if(getStocksOwned().containsKey(stock) && (!buyStocks || Math.random() < 0.3)) {
+					if((noStocks = sellAction(stock, noStocks)) > -1){
+						s += "sell&" + stock.getName() + "&" + noStocks  + "&" + stock.getValue() + "\n";
+						buyStocks = true;
+					}
 				}
 				
-				if(sellAction(stock) && getStocksOwned().containsKey(stock)) {
-					
-					
+				if(!buyStocks) {
+					s += getProb(stock);
 				}
-				
 				
 			}
-			
-			
-			
 			
 			if(!s.equals("")) {
 				alertFollowers(s);
-				updateGain(gains(stocksPrice));
-			}
-			
-			
-
-			
-			
+				
+			}		
+			updateGain(gains(stocksPrice));
 		}
 		
-		boolean buyAction(String stock) {
-			// TODO :
+		private int buyAction(Stock stock, int noStocks) {		    
+			if(tips.containsKey(stock.getName())) {
+				
+				Tip stockTip = tips.get(stock.getName());
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH);
+				Date date1 = null;
+				Date date2 = null;
+						
+				try {
+					date1 = sdf.parse(today);
+					date2 = sdf.parse(stockTip.getDate());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 			
+				if(date2.after(date1)) {					
+					System.out.println(stock.getName() + " recebeu uma dica valida!");
+					System.out.println(" I will buy a stock");
+					
+					if(stockTip.getType().equals("max") && Math.random() <=  GOOD_AGENTS_MAX_BUY_ACTION_PROB) {
+						noStocks = getNoStocks(stock.getValue(), stockTip.getStockValue(), true);
+						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will buy: " +  noStocks + " stocks");
+						buyStocks(stock.getName(), stock.getValue(), noStocks);
+	
+					} else if(stockTip.getType().equals("min") && Math.random() <=  GOOD_AGENTS_MIN_BUY_ACTION_PROB) {
+						noStocks = getNoStocks(stock.getValue(), stockTip.getStockValue(), false);
+						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will buy: " +  noStocks + " stocks");
+
+						buyStocks(stock.getName(), stock.getValue(), noStocks);
+					}
+					System.out.println("I am " +  myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash);
+				}
+			} else return -1;
+			
+			// TODO :
 			// if dica && dica.date < today:
 			// max - 0.1
 			// min - 0.9
 			// else :
 			// return getProb(stock)
 			
-			
-			
-			return true;
+			return noStocks;
 		}
 		
-		boolean sellAction(String stock) {
+		private int sellAction(Stock stock, int noStocks) {		
+			if(tips.containsKey(stock.getName())) {
+				Tip stockTip = tips.get(stock.getName());
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH);
+				Date date1 = null;
+				Date date2 = null;
+						
+				try {
+					date1 = sdf.parse(today);
+					date2 = sdf.parse(stockTip.getDate());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			
+				if(date1.after(date2)) {
+					System.out.println(stock.getName() + " recebeu uma dica valida!");
+
+					if(stockTip.type.equals("max") && Math.random() <=  GOOD_AGENTS_MAX_SELL_ACTION_PROB) {
+						noStocks = getNoStocks(stock.getValue(), stockTip.getStockValue(), true);
+						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will sell: " +  noStocks + " stocks");
+
+						sellStocks(stock.getName(), stock.getValue(), noStocks);
+					} else if(stockTip.type.equals("min") && Math.random() <=  GOOD_AGENTS_MIN_SELL_ACTION_PROB) {
+						noStocks = getNoStocks(stock.getValue(), stockTip.getStockValue(), false);						
+						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will sell: " +  noStocks + " stocks");
+
+						sellStocks(stock.getName(), stock.getValue(), noStocks);
+					}
+					System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash  + " ; SavedValue: " + stocksOwned.get(stock).getSavedValue());
+				}
+			} else return -1;
+			
 			// TODO:			
 			// if dicas && dica.date < today:
 			// max - 0.1
@@ -119,26 +202,33 @@ public class UserGoodAgent extends UserAgent {
 			// else :
 			// return getProb(stock)
 			
+			return noStocks;
+		}
+		
+		 
+		
+		private int getNoStocks(double actualPrice, double stockTip, boolean type) {
+			int maxStocks = ((int)(cash/actualPrice));
+			int noStocks = -1;
+			double elapsedValue = 0.0;
 			
-			return true;
-		}
-		
-		boolean getProb(String stock) {
-			// TODO:			
-			if(Math.random() < 0.5)
-				return true;
-			return false;
-		}
-		
-		int getNoStocks(double metric) {
-			// TODO
-			return 50;
-		}
-		
-		
-		}
-		
-	
-	
+			if(type) {		// tip is a maximum value (most likely will sell stocks)
+				elapsedValue = (stockTip - actualPrice)/actualPrice;
+			} else {		// tip is a minimum value (most likely will buy stocks)
+				elapsedValue = (actualPrice - stockTip)/stockTip;
+			}
+			
+			noStocks = ((int)(5*elapsedValue*maxStocks));
+			
+			if(noStocks < 1) {
+				if(maxStocks > 5) {
+					noStocks = 5;
+				} else noStocks = maxStocks;
+			} else if(noStocks > maxStocks) {
+				noStocks = ((int)(0.5*maxStocks));
+			}
 
+			return noStocks;
+		}	
+	}
 }

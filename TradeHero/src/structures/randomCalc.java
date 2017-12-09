@@ -12,14 +12,25 @@ public  class randomCalc {
 
 	
 	public static final double GOOD_AGENTS_SELECTION_PROB = 0.2;
-	public static final double AGENTS_BUY_ACTION_PROB = 0.1;
+	public static final double AGENTS_BUY_ACTION_PROB = 0.08;
 	public static final double MAX_NUMBER_OF_STOCKS_TO_BUY = 50;
 	public static final double AGENTS_SELL_ACTION_PROB = 0.05;
 	public static final double AGENTS_SELL_ACTION_PROB_PROFIT = 0.2;
 	public static final double MINIMUM_POSSIBLE_GAIN = 1000.0;
+	public static final double FOLLOWING_USER_PROB = 0.25;
+	public static final int DAY_PERIOD = 3;
+	public static final int PAYMENT_PERIOD = 15;
+	public static final int PAYMENT_VALUE = 100;
+	public static final double ROC_CONST = 0.5 ; 
+	public static final double ROC_SUCCESS = 0.6;
+	public static final double ROC_INSUCCESS = 0.08;
+	
 	
 	public static final String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	public static final int monthsTotal[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+
+
 	public static int this_day = 1;
 	public static int this_month = 8;
 	public static int this_year = 17;
@@ -120,6 +131,63 @@ public  class randomCalc {
 		
 		
 	}
+
+	public static String yesterday(String date) {
+		String[] parts = date.split("-");
+		int day = Integer.parseInt(parts[0]) - 1;
+		int month = 1;
+		for(int i = 0; i < months.length; i++) {
+					
+					if(randomCalc.months[i].equals(parts[1])) {
+						month = i + 1;
+						break;
+					}
+				}
+		int year = Integer.parseInt(parts[2]);
+		if(day == 0) {
+			if(month == 1) {
+				year--;
+				day = 31;
+				month = 12;
+			}else {
+				month--;
+				day = monthsTotal[month -1];
+				
+			}			
+		}
+		
+		
+		
+		return "" + day +"-" + randomCalc.months[month - 1] + "-" + year;
+	}
+
+	public static String lastMonth(String today) {
+		// TODO Auto-generated method stub
+		String[] parts = today.split("-");
+		int day = Integer.parseInt(parts[0]);
+		int month = 1;
+		for(int i = 0; i < months.length; i++) {
+					
+			if(randomCalc.months[i].equals(parts[1])) {
+					month = i + 1;
+					break;
+			}
+		}
+		int year = Integer.parseInt(parts[2]);
+		if(month == 1) {
+			month = 12;
+			year--;
+		}else {
+			month--;
+			if(day > monthsTotal[month-1])
+				day = monthsTotal[month -1];
+		}
+		
+		
+		 return "" + day +"-" + randomCalc.months[month - 1] + "-" + year;
+	}
+	
+	
 	
 	
 	

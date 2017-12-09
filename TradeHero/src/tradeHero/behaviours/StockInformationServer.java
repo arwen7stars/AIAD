@@ -43,7 +43,7 @@ public class StockInformationServer extends CyclicBehaviour {
 
 			if (st != null) {
 				
-				reply.setContent(name +  "&" + st.getValue());
+				reply.setContent(myAgent.getLocalName() +  "&" + st.getValue());
 				System.out.println("Stoke-agent "+ myAgent.getAID().getName()+": sent: " + reply.toString());
 			}
 			else {

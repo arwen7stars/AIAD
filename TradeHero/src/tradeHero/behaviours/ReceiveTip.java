@@ -31,17 +31,9 @@ public class ReceiveTip extends CyclicBehaviour{
 		if(msg != null) {
 			/* Tratamento da mensagem */
 			System.out.print("I am a good user and I received: " + msg.getContent()); 	// stoke tip received from stock agents 
-			/*
-			String[] parts = msg.getContent().split("&");
-			String nome = parts[0];
-			String type = parts[1];
-			String dia  = parts[2];
-			double value = Double.parseDouble(parts[3]);
 			
-			goodAgent.addTip(nome, type, dia, value);
-			
-			
-			*/
+			goodAgent.addTip(msg);
+
 		}else {
 			block();
 		}

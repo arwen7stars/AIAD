@@ -1,22 +1,14 @@
 package tradeHero;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.media.j3d.Behavior;
-
-import jade.domain.FIPAException;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import sajas.core.AID;
 import sajas.core.Agent;
-import sajas.core.behaviours.Behaviour;
-import sajas.core.behaviours.CyclicBehaviour;
-import sajas.domain.DFService;
 import structures.Stock;
 import structures.Tip;
-import tradeHero.behaviours.ReceiveStockUpdate;
 
 public class UserAgent extends Agent {
 	/*
@@ -27,10 +19,12 @@ public class UserAgent extends Agent {
 														// numero de seguidores determina quanto o utilizador vai receber de premiacao
 	protected double gain_rate;														// media de ganhos
 	protected ArrayList<AID> followers = new ArrayList<AID>();				    	// se o utilizador seguir alguem, vai receber "dicas" de investimento desse utilizador
-	protected ArrayList<AID> following = new ArrayList<AID>();
+	//protected ArrayList<AID> following = new ArrayList<AID>();
 	protected Map<String, Stock> stocksOwned = new HashMap<String, Stock>();	// numero de stocks possu�dos e de que empresas foram comprados
 	protected Map<String, Tip> tips = new HashMap<String, Tip>();
+	private Map<String, Double> ROC = new HashMap<String, Double>();
 	
+	public static  ArrayList<Stock> stocksPrice;
 	
 	public UserAgent() {}
 
@@ -52,14 +46,7 @@ public class UserAgent extends Agent {
 		this.followers = following;
 	}
 	
-	public ArrayList<AID> getFollowing() {
-		return followers;
-	}
-
-	public void setFollowing(ArrayList<AID> following) {
-		this.followers = following;
-	}
-	
+		
 
 	public double getGain_rate() {
 		return gain_rate;
@@ -145,10 +132,39 @@ public class UserAgent extends Agent {
 		
 		return total + this.cash;
 	}
+
+	public void addFollower(AID aid) {
+		// TODO Auto-generated method stub
+		followers.add(aid);
+	}
+
+	public void increaseCash(double paymentValue) {
+		// TODO Auto-generated method stub
+		cash += paymentValue;
+	}
 	
 	
+	public void updateRoc(String name, Double value) {
+		ROC.put(name, value);
+	}
+	
+	public Double getRocValue(String name) {
+		if(ROC.containsKey(name))		
+			return ROC.get(name);
+		return 0.0;
+	}
 	
 	
+	public void addTip(ACLMessage msg) {
+		String[] parts = msg.getContent().split("&");
+		String name = parts[0];
+		String type = parts[1];
+		String date  = parts[2];
+		double value = Double.parseDouble(parts[3]);
+		
+		Tip receivedTip = new Tip(name, type, date, value);
+		tips.put(name, receivedTip);
+	}
 	
 		
 		

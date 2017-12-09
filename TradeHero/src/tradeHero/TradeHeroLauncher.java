@@ -7,14 +7,13 @@ import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.graph.NetworkBuilder;
-import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
 import sajas.wrapper.ContainerController;
 import structures.Stock;
 
 public class TradeHeroLauncher extends RepastSLauncher {
-	private static int N_NORMAL_USERS = 70;
+	private static int N_NORMAL_USERS = 3;
 	private static int N_GOOD_USERS = 3;
 	private static int N_RANDOM_USERS = 10;
 	
@@ -76,18 +75,18 @@ public class TradeHeroLauncher extends RepastSLauncher {
 			
 			// create users
 			// good users
-			/*
+			 
 			for (int i = 0; i < N_GOOD_USERS; i++) {
 				UserGoodAgent us = new UserGoodAgent();
 				agentContainer.acceptNewAgent("GoodUser" + i, us).start();
 			}
-			
+			 
 			// normal users
-			for (int i = 0; i < N_NORMAL_USERS; i++) {
+		/*	for (int i = 0; i < N_NORMAL_USERS; i++) {
 				UserNormalAgent us = new UserNormalAgent();
 				agentContainer.acceptNewAgent("NormalUser" + i, us).start();
-			}
-			*/
+			}*/
+			
 			// random users
 			for (int i = 0; i < N_RANDOM_USERS; i++) {
 				UserRandomAgent us = new UserRandomAgent();
@@ -99,7 +98,9 @@ public class TradeHeroLauncher extends RepastSLauncher {
 				StockAgent st = new StockAgent();
 				mainContainer.acceptNewAgent("Stock" + i, st).start();
 			}*/
-
+			
+			
+				
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		} catch(Exception e){
