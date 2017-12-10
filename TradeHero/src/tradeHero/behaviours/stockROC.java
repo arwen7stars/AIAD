@@ -15,6 +15,8 @@ import tradeHero.StockAgent;
 
 public class stockROC extends CyclicBehaviour{
 	
+	private static final long serialVersionUID = 1L;
+	
 	private StockAgent stk;
 	
 	public stockROC(StockAgent stk) {
@@ -25,7 +27,6 @@ public class stockROC extends CyclicBehaviour{
 	
 	@Override
 	public void action() {
-		// TODO Auto-generated method stub
 		MessageTemplate mt = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.REQUEST),
 				MessageTemplate.MatchConversationId("ROC"));
 		ACLMessage msg = myAgent.receive(mt);

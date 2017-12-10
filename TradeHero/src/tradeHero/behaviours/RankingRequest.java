@@ -9,6 +9,8 @@ import structures.Rank;
 import tradeHero.Market;
 
 public class RankingRequest extends CyclicBehaviour {
+	private static final long serialVersionUID = 1L;
+	
 	private Market market;
 	
 	public RankingRequest(Market market) {
@@ -19,7 +21,6 @@ public class RankingRequest extends CyclicBehaviour {
 	
 	@Override
 	public void action() {
-		// TODO Auto-generated method stub
 		MessageTemplate mt = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.REQUEST),
 				MessageTemplate.MatchConversationId("ranking"));
 		ACLMessage msg = myAgent.receive(mt);			
@@ -45,8 +46,7 @@ public class RankingRequest extends CyclicBehaviour {
 		}else {
 			block();
 		}
-		
-		
+
 	}
 	
 }

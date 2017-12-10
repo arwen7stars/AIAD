@@ -18,11 +18,7 @@ import tradeHero.behaviours.stockROC;
 
 public class StockAgent extends Agent {
 	private Map<String, Stock> stockHistory = new HashMap<String, Stock>();		// historico de acoes extraido de google finance
-	private Stock actualStockValue;
 	private String name ="";
-	
-	
-	
 	
 	public StockAgent(String name) {this.name = name;}
 	
@@ -69,9 +65,6 @@ public class StockAgent extends Agent {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //Collections.reverse(stockHistory);
-        
-        actualStockValue = stockHistory.get(0);		// stock history starts on day one
 	}
 
 	public Map<String, Stock> getStockHistory() {
@@ -82,18 +75,7 @@ public class StockAgent extends Agent {
 		this.stockHistory = stockHistory;
 	}
 
-	public Stock getActualStockValue() {
-		return actualStockValue;
-	}
-
-	public void setActualStockValue(Stock actualStockValue) {
-		this.actualStockValue = actualStockValue;
-	}
-
 	public String newTip(String today) {
-		
-		boolean stop = false;
-		
 		boolean unknown = true;
 		boolean dec = false;
 		
@@ -102,7 +84,6 @@ public class StockAgent extends Agent {
 		
 		 
 		while(true) {
-			
 			String tomorrow = randomCalc.tomorrow(day);
 			double aux = stockHistory.get(tomorrow).getValue();
 			
@@ -112,7 +93,6 @@ public class StockAgent extends Agent {
 			}else if(unknown) {
 				unknown = false;
 			}
-			
 			
 			if(dec && aux < maxOrmin) {
 				day = tomorrow;
@@ -130,8 +110,5 @@ public class StockAgent extends Agent {
 			
 		return getLocalName() + (dec ? "&min&" : "&max&" ) + day + "&" + maxOrmin;
 	}
-	
-		
-	
 	
 }

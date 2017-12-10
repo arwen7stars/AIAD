@@ -5,7 +5,6 @@
 
 package tradeHero.behaviours;
 
-import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import sajas.core.behaviours.CyclicBehaviour;
@@ -13,7 +12,7 @@ import structures.randomCalc;
 import tradeHero.UserAgent;
 
 public class ReceivePayments extends CyclicBehaviour {
-	private int step = 0;
+	private static final long serialVersionUID = 1L;
 	private UserAgent userAgent;
 	
 	public ReceivePayments(UserAgent us) {
@@ -34,11 +33,7 @@ public class ReceivePayments extends CyclicBehaviour {
 			userAgent.increaseCash(randomCalc.PAYMENT_VALUE);
 			System.out.println("[PAYMENTS] Im " + myAgent.getLocalName() + " and my cash now is: " + userAgent.getCash());
 			
-		}else {
-			
 		}
 	}
-
-	
 	
 }

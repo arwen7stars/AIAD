@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import sajas.core.Agent;
 import sajas.core.behaviours.Behaviour;
 import structures.randomCalc;
 import tradeHero.Market;
 
 public class UpdateStokes extends Behaviour {
+	private static final long serialVersionUID = 1L;
 	
 	private AID[] stokeAgents;
 	private AID[] userAgents;
@@ -31,39 +31,31 @@ public class UpdateStokes extends Behaviour {
 	
 	@Override
 	public void action() {	
-		
-		
-		// TODO Auto-generated method stub
 		switch(step) {
 		case 0:
-			
-						
-			// Send a request to all stokes
 			ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
 			
 			for(int i = 0; i <  stokeAgents.length; i++) {
 				request.addReceiver( stokeAgents[i]);
 				
 			}
-			System.out.println("today: " + randomCalc.today());
+			
+			System.out.println("     [UpdateStokes] Market day -> today: " + randomCalc.today());
 			request.setContent(randomCalc.today());
 			request.setConversationId("stoke-value");
 			request.setReplyWith("request" + System.currentTimeMillis());
 			myAgent.send(request);
 			
-			mt = MessageTemplate.and(MessageTemplate.MatchConversationId("stoke-value"),MessageTemplate.MatchInReplyTo(request.getReplyWith()));
+			mt = MessageTemplate.and(MessageTemplate.MatchConversationId("stoke-value"), MessageTemplate.MatchInReplyTo(request.getReplyWith()));
 			
 			step = 1;
 			
-			System.out.println("I sent the message to: " + stokeAgents.length);
+			System.out.println("     [UpdateStokes] I sent the message to: " + stokeAgents.length + " stoke agents.");
 			
 			break;			
 		
 		
 		case 1:
-			
-		 
-			
 			ACLMessage reply = myAgent.receive(mt);
 			if(reply != null) {
 				if(reply.getPerformative() == ACLMessage.INFORM) {
@@ -71,15 +63,12 @@ public class UpdateStokes extends Behaviour {
 					stokeValues.add(stokePrice);
 					repliesCnt++;
 					
-					System.out.println("received: " + stokePrice);
+					System.out.println("     [UpdateStokes] Market received: " + stokePrice);
 					
 					if(repliesCnt >= stokeAgents.length) {
 						step = 2;
 					}
-					
-				}
-				
-				
+				}	
 			}else {
 				block();
 			}
@@ -103,22 +92,18 @@ public class UpdateStokes extends Behaviour {
 			myAgent.send(informUsers);
 			step = 3;
 			break;
-			
-			
-			
 		}
-		
 	}
 
 	@Override
 	public boolean done() {
-		// TODO Auto-generated method stub
 		if(step != 3) {
 			
 			return false;
 		}
 		randomCalc.nextDay();
-		System.out.println("WTF");
+		System.out.println("     [UpdateStokes] Finished for this day. Preparing for next day.");
+		System.out.println("");
 		return true;
 	}
 	

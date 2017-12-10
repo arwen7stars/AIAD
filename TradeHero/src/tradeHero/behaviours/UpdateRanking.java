@@ -14,6 +14,8 @@ import tradeHero.Market;
 
 public class UpdateRanking extends CyclicBehaviour {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Market market;
 	
 	public UpdateRanking(Market market) {
@@ -23,7 +25,6 @@ public class UpdateRanking extends CyclicBehaviour {
 	
 	@Override
 	public void action() {
-		// TODO Auto-generated method stub
 		MessageTemplate mt = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.INFORM),
 				MessageTemplate.MatchConversationId("gains"));
 				
@@ -53,9 +54,7 @@ public class UpdateRanking extends CyclicBehaviour {
 			
 			Collections.sort(ranking);
 			
-			System.out.println("ranking: " + ranking.size()  + " ; " +  ranking.toString() );
-			 
-			
+			System.out.println("Ranking: " + ranking.size()  + " users ; " +  ranking.toString() );	
 			
 		}else {
 			block();

@@ -1,9 +1,6 @@
 package tradeHero.behaviours;
 
 import java.util.ArrayList;
-import java.util.Map;
-
-import com.sun.corba.se.impl.copyobject.ReferenceObjectCopierImpl;
 
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -18,7 +15,8 @@ import structures.randomCalc;
 import tradeHero.UserAgent;
 
 public abstract class ReceiveStockUpdate extends CyclicBehaviour {
-
+	private static final long serialVersionUID = 1L;
+	
 	protected ArrayList<Stock> stocksPrice;
 	protected String today = "";
 	private UserAgent myUserAgent = null;
@@ -50,7 +48,7 @@ public abstract class ReceiveStockUpdate extends CyclicBehaviour {
 					stocksPrice.add(new Stock(stock[0], stock[1]));
 				
 			}
-			myUserAgent.stocksPrice = stocksPrice;
+			UserAgent.stocksPrice = stocksPrice;
 			buyerAction();	
 			
 		}else {
@@ -107,18 +105,16 @@ public abstract class ReceiveStockUpdate extends CyclicBehaviour {
 			msg.addReceiver(result[0].getName());
 			msg.setContent(myAgent.getLocalName() + "&" + gain);
 			msg.setConversationId("gains");
-			System.out.println("I," + myAgent.getLocalName() +  ", update my gains with the following message: " + msg.getContent() );
+			System.out.println("          [updateGain] I, " + myAgent.getLocalName() +  ", update my gains with the following message: " + msg.getContent() );
 			myAgent.send(msg);
 						
 		} catch (FIPAException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		
 	}
 	
 	protected String getProb(Stock stock) {
-		// TODO:
 		double answer = 0.2;
 		
 		
@@ -149,22 +145,19 @@ public abstract class ReceiveStockUpdate extends CyclicBehaviour {
 		
 		myUserAgent.updateRoc(stock.getName(), answer);
 		
-		System.out.println("[ROC] I, " +  myAgent.getLocalName() + ", received the following ROC: " + myUserAgent.getRocValue(stock.getName()));
+		//System.out.println("[ROC] I, " +  myAgent.getLocalName() + ", received the following ROC: " + myUserAgent.getRocValue(stock.getName()));
 		
 		int maxStocks = ((int)(myUserAgent.getCash()/stock.getValue()));
 		int total = (int)(Math.random()*maxStocks);
 		String s = "";
 		
 		if(answer > randomCalc.ROC_CONST && Math.random() < randomCalc.ROC_SUCCESS) {
-			
-			
-			
 			myUserAgent.buyStocks(stock.getName(), stock.getValue(), total);
 			
 			s += "buy&" + stock.getName() + "&" + total  +"&" + stock.getValue() + "\n";
 			
 			
-		}else if(answer < randomCalc.ROC_CONST && Math.random() < randomCalc.ROC_SUCCESS) {
+		}else if(myUserAgent.getStocksOwned().containsKey(stock.getName()) && answer < randomCalc.ROC_CONST && Math.random() < randomCalc.ROC_SUCCESS) {
 			
 			
 			myUserAgent.sellStocks(stock.getName(), stock.getValue(), total);
@@ -172,41 +165,11 @@ public abstract class ReceiveStockUpdate extends CyclicBehaviour {
 			s += "sell&" + stock.getName() + "&" + total +"&" + stock.getValue() + "\n";
 			
 		}
-			
-		System.out.print("[BUY|SELL] I, " + myAgent.getLocalName() + " performed the following: " + s);	
+		if(!s.equals(""))
+			System.out.println("[BUY|SELL] I, " + myAgent.getLocalName() + " performed the following: " + s);	
 		
 		return s;
 		
 	}
-	
-	
-	private int getNoStocks(double actualPrice, double stockTip, boolean type) {
-		int maxStocks = ((int)(myUserAgent.getCash()/actualPrice));
-		int noStocks = -1;
-		double elapsedValue = 0.0;
-		
-		if(type) {		// tip is a maximum value (most likely will sell stocks)
-			elapsedValue = (stockTip - actualPrice)/actualPrice;
-		} else {		// tip is a minimum value (most likely will buy stocks)
-			elapsedValue = (actualPrice - stockTip)/stockTip;
-		}
-		
-		noStocks = ((int)(5*elapsedValue*maxStocks));
-		
-		if(noStocks < 1) {
-			if(maxStocks > 5) {
-				noStocks = 5;
-			} else noStocks = maxStocks;
-		} else if(noStocks > maxStocks) {
-			noStocks = ((int)(0.5*maxStocks));
-		}
-
-		return noStocks;
-	}
-	
-	
-	
-	
-	
 	
 }

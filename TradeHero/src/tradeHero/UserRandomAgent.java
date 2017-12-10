@@ -1,7 +1,6 @@
 package tradeHero;
 
 import jade.domain.FIPAException;
-import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import sajas.domain.DFService;
@@ -15,7 +14,6 @@ public class UserRandomAgent extends UserAgent {
 	public UserRandomAgent() {
 		super();
 	}
-	
 	
 	@Override
 	public void setup() {
@@ -42,13 +40,15 @@ public class UserRandomAgent extends UserAgent {
 	
 	class ReceiveStockUpdateAgent extends ReceiveStockUpdate {
 		
+		private static final long serialVersionUID = 1L;
+
 		ReceiveStockUpdateAgent(UserAgent agent){
 			super(agent);
 		}
 		
 		@Override
 		public void buyerAction() {
-			/* Implementação do comportamento do agente após receber a informação sobre o valor das ações 
+			/* Implementacao do comportamento do agente apos receber a informacao sobre o valor das acoes 
 			 * 		Atributos:	
 			 * 			today: 						String
 			 * 			stoksPrice<Stock> :	 		ArrayList<Stock> com nome da stock e valor
@@ -70,11 +70,11 @@ public class UserRandomAgent extends UserAgent {
 					//////////////////////////////////////////////////////////////
 					//////////////////////////////////////////////////////////////
 					// TODO: Verificar se isto funciona!!!!
-					System.out.println("Im " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I Will buy: " +  noStocks + " caches");
+					System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I Will buy: " +  noStocks + " caches");
 					
 					buyStocks(stocksPrice.get(i).getName(), stocksPrice.get(i).value, noStocks);
 					
-					System.out.println("Im " +  myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash);
+					System.out.println("I am " +  myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash);
 					
 					/* 3. Avisar o mercado sobre o ganho atual 			*/
 					s += "buy&" + stock + "&" + noStocks  +  "&" + stocksPrice.get(i).value + "\n";
@@ -93,12 +93,12 @@ public class UserRandomAgent extends UserAgent {
 						/* 1. Decidir quantas ações serão vendidas */
 						
 						int noStocks = randomCalc.numberOfStocks(stocksOwned.get(stock).getQuantity());
-						System.out.println("Im " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I Will sell: " +  noStocks + " caches");
+						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I Will sell: " +  noStocks + " caches");
 						
 						/* 2. Efetuar a venda */
 						sellStocks(stock, stocksPrice.get(i).getValue(), noStocks);
 						
-						System.out.println("Im " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash  + " ; SavedValue: " + stocksOwned.get(stock).getSavedValue());
+						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash  + " ; SavedValue: " + stocksOwned.get(stock).getSavedValue());
 						/* 3 Avisar o seguidores que efetuou uma venda */
 						s += "sell&" + stock + "&" + noStocks  + "&" + stocksPrice.get(i).getValue()  + "\n";
 						

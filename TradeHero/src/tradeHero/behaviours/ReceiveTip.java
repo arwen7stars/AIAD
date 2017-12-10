@@ -1,18 +1,14 @@
 package tradeHero.behaviours;
 
-import java.util.ArrayList;
-
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import sajas.core.behaviours.CyclicBehaviour;
-import structures.Stock;
 import tradeHero.UserGoodAgent;
 
 public class ReceiveTip extends CyclicBehaviour{
+	private static final long serialVersionUID = 1L;
 	
 	private UserGoodAgent goodAgent;
-	
-	
 	
 	public ReceiveTip(UserGoodAgent uga) {
 		super();
@@ -30,18 +26,12 @@ public class ReceiveTip extends CyclicBehaviour{
 		
 		if(msg != null) {
 			/* Tratamento da mensagem */
-			System.out.print("I am a good user and I received: " + msg.getContent()); 	// stoke tip received from stock agents 
-			
+			System.out.println("[ReceiveTip] I am a good user " + myAgent.getLocalName() + "and I received: " + msg.getContent()); 	// stoke tip received from stock agents 	
 			goodAgent.addTip(msg);
-
 		}else {
 			block();
 		}
 		
-		
-		
 	}
-	
-	
 	
 }

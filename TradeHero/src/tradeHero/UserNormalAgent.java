@@ -1,15 +1,12 @@
 package tradeHero;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import sajas.core.AID;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.core.behaviours.TickerBehaviour;
 import sajas.core.behaviours.WakerBehaviour;
@@ -48,12 +45,10 @@ public class UserNormalAgent extends UserAgent {
 			fe.printStackTrace();
 		}
 		
-		
-		
-		
-		
 		addBehaviour( new WakerBehaviour(this, 15000) {
-			
+
+			private static final long serialVersionUID = 1L;
+
 			protected void handleElapsedTimeout() {
 				/* Common Behaviours to all users */		
 				addBehaviour(new ReceiveStockUpdateAgent(This));
@@ -64,6 +59,8 @@ public class UserNormalAgent extends UserAgent {
 				addBehaviour(new InicializeFollowing(This));
 				addBehaviour(new TickerBehaviour(This, randomCalc.PAYMENT_PERIOD*1000) {
 					
+					private static final long serialVersionUID = 1L;
+
 					protected void onTick() {
 						addBehaviour(new Payments(This));
 					}
@@ -80,15 +77,10 @@ public class UserNormalAgent extends UserAgent {
 		return following;
 	}
 	
-	
-	
-	
-	
-	
-	
 	/* Receives tips from agents that are being followed */
 	/* Left to do: the user decides whether should, or not, follow   */
 	class FollowingTips extends CyclicBehaviour {
+		private static final long serialVersionUID = 1L;
 		
 		private UserNormalAgent normalAgent;
 		
@@ -135,8 +127,7 @@ public class UserNormalAgent extends UserAgent {
 				
 				}
 				
-				 
-				updateGain(gains(normalAgent.stocksPrice));
+				updateGain(gains(UserAgent.stocksPrice));
 				
 				
 			}else {
@@ -177,10 +168,11 @@ public class UserNormalAgent extends UserAgent {
 	
 	
 	class ReceiveStockUpdateAgent extends ReceiveStockUpdate {
+		
+		private static final long serialVersionUID = 1L;
 
 		protected ReceiveStockUpdateAgent(UserAgent agent) {
 			super(agent);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -207,8 +199,6 @@ public class UserNormalAgent extends UserAgent {
 				updateGain(gains(stocksPrice));
 			}
 		}
-		
-		
 		
 	}
 		

@@ -19,12 +19,7 @@ public class Market extends Agent {
 	
 	private AID[] stokeAgents;
 	private AID[] userAgents;
-
-	
 	private ArrayList<Rank> ranking = new ArrayList<Rank>();
-	
-	
-	
 	public static Market market = null;
 	
 	Market() throws Exception { 
@@ -36,7 +31,7 @@ public class Market extends Agent {
 	}
 	
 	protected void setup() {
-		System.out.println("Hallo! Market-agent "+getAID().getName()+" is ready.");
+		System.out.println("[MARKET] HELLO! Market agent " + getAID().getName() + " is ready.");
 		
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -53,8 +48,14 @@ public class Market extends Agent {
 		
 		
 		addBehaviour(new TickerBehaviour(this, randomCalc.DAY_PERIOD*1000) {
+
+			private static final long serialVersionUID = 1L;
+
 			protected void onTick() {
-				 System.out.println("-----------------------------------------------------------------------------------------------------------");
+				System.out.println("");
+				System.out.println("-----------------------------------------------------------------------------------------------------------");
+				System.out.println("");
+				
 				// Update the list of seller agents
 				DFAgentDescription template = new DFAgentDescription();
 				DFAgentDescription template2 = new DFAgentDescription();
@@ -69,19 +70,17 @@ public class Market extends Agent {
 				
 				try {
 					DFAgentDescription[] result = DFService.search(myAgent, template); 
-					//System.out.println("Market-agent "+getAID().getName()+":"+"Found the following stoke agents:");
+
 					stokeAgents = new AID[result.length];
 					for (int i = 0; i < result.length; ++i) {
 						stokeAgents[i] = result[i].getName();
-						//System.out.println(stokeAgents[i].getName());
 					}
 					
 					result = DFService.search(myAgent, template2);
-					//System.out.println("Market-agent "+getAID().getName()+":"+"Found the following user agents:");
+
 					userAgents = new AID[result.length];
 					for(int i = 0; i < result.length; ++i) {
 						userAgents[i] = result[i].getName();
-						//System.out.println(userAgents[i].getName());
 					}
 					
 				}
@@ -109,21 +108,15 @@ public class Market extends Agent {
 	
 
 	public ArrayList<Rank> getRanking() {
-		// TODO Auto-generated method stub
 		return ranking;
 	}
 
 	public AID[] getStokeAgents() {
-		// TODO Auto-generated method stub
 		return this.stokeAgents;
 	}
 
 	public AID[] getUserAgents() {
-		// TODO Auto-generated method stub
 		return this.userAgents;
 	}
-
-	
-	
 
 }

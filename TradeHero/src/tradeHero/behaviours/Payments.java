@@ -16,6 +16,8 @@ import tradeHero.UserNormalAgent;
 
 /* Left TODO: The normal agent decides if still wants to follow another user  */
 public class Payments extends Behaviour {
+	private static final long serialVersionUID = 1L;
+	
 	private int step = 0;
 	private UserNormalAgent normalAgent;
 	private ArrayList<String> following;
@@ -37,7 +39,6 @@ public class Payments extends Behaviour {
 		
 		switch(step) {
 		case 0:
-			// TODO Auto-generated method stub
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.setConversationId("payment");
 			for(int i = 0; i < following.size(); i++) {
@@ -135,8 +136,8 @@ public class Payments extends Behaviour {
 					if(Math.random() < randomCalc.FOLLOWING_USER_PROB) {
 						msg2.addReceiver(new AID(newsInRank.get(i), AID.ISLOCALNAME));
 						following.add(newsInRank.get(i));
+						System.out.println("I am " + myAgent.getLocalName() + " and I will be following " + newsInRank.get(i));
 					}
-					System.out.println("Im " + myAgent.getLocalName() + " and I willbe following " + newsInRank.get(i));
 				}
 				msg2.setContent("add&" + myAgent.getLocalName());
 				
@@ -152,7 +153,6 @@ public class Payments extends Behaviour {
 
 	@Override
 	public boolean done() {
-		// TODO Auto-generated method stub
 		return step == 4;
 	}
 	

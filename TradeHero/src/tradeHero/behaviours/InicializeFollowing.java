@@ -14,21 +14,19 @@ import structures.randomCalc;
 import tradeHero.UserNormalAgent;
 
 public class InicializeFollowing extends SimpleBehaviour {
-
+	private static final long serialVersionUID = 1L;
+	
 	private int step = 0;
 	private MessageTemplate mt;
-	private UserNormalAgent normalAgent;
 	private ArrayList<String> Following;
 	
 	public InicializeFollowing(UserNormalAgent usa) {
 		super();
-		normalAgent = usa;
 		Following = usa.getFollowing();
 	}
 	
 	@Override
 	public void action() {
-		// TODO Auto-generated method stub
 		switch(step) {
 		case 0:			// request ranking to Market
 			
@@ -100,13 +98,10 @@ public class InicializeFollowing extends SimpleBehaviour {
 			break;
 			
 		}
-		
-		
 	}
 
 	@Override
 	public boolean done() {
-		// TODO Auto-generated method stub
 		return (step == 3);
 	}
 	

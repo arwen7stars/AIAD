@@ -58,7 +58,6 @@ public class Stock
     }
 
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
 	}
     
@@ -71,7 +70,6 @@ public class Stock
 	}
 
 	public Integer getQuantity() {
-		// TODO Auto-generated method stub
 		return quantity;
 	}
     

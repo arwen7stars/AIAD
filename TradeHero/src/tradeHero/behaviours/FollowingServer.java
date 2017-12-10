@@ -19,7 +19,8 @@ import sajas.core.behaviours.CyclicBehaviour;
 import tradeHero.UserAgent;
 
 public class FollowingServer extends CyclicBehaviour{
-
+	private static final long serialVersionUID = 1L;
+	
 	private UserAgent userAgent;
 	
 	public FollowingServer(UserAgent userAgent) {
@@ -33,7 +34,9 @@ public class FollowingServer extends CyclicBehaviour{
 				MessageTemplate.MatchConversationId("following"));
 		ACLMessage msg = myAgent.receive(mt);
 		
-		if(msg != null) {				
+		if(msg != null) {
+			
+			System.out.println("      !!IMP!! FOLLOWING SERVER " + msg.getContent() + "!!!");
 			
 			String parts[] = msg.getContent().split("&");
 			
@@ -51,11 +54,8 @@ public class FollowingServer extends CyclicBehaviour{
 						followers.remove(i);
 				}
 				
-			}
-			
-			
-			
-		}else {
+			}	
+		} else {
 			block();
 		}
 	}

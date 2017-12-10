@@ -16,9 +16,11 @@ import tradeHero.StockAgent;
 
 public class StockInformationServer extends CyclicBehaviour {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private Map<String, Stock> stockHistory;
-	private String name;
 	private StockAgent stk;
+	private String name;
 	
 	public StockInformationServer(StockAgent stk, Map<String, Stock> stks, String name) {
 		super();
@@ -35,26 +37,21 @@ public class StockInformationServer extends CyclicBehaviour {
 		ACLMessage msg = myAgent.receive(mt);
 		if (msg != null ) {
 			
-			/* 1. Mensagem enviada ao mercado avisando sobre o valor da ação consoante a data recebida */
+			/* 1. Mensagem enviada ao mercado avisando sobre o valor da acao consoante a data recebida */
 			String date = msg.getContent();
 			ACLMessage reply = msg.createReply();
 			reply.setPerformative(ACLMessage.INFORM);
 			Stock st = stockHistory.get(date); 
 
 			if (st != null) {
-				
 				reply.setContent(myAgent.getLocalName() +  "&" + st.getValue());
-				System.out.println("Stoke-agent "+ myAgent.getAID().getName()+": sent: " + reply.toString());
+				System.out.println("");
+				System.out.println("[StockInformationServer] Stoke-agent "+ myAgent.getAID().getName()+": sent to Market: " + reply.getContent());
 			}
 			else {
 				// The requested book has been sold to another buyer in the meanwhile .
-				
 				reply.setContent("error");
 			}
-			
-			
-			
-			
 			
 			/* 2. Enviar dicas aos bons utilizadores							 */
 			DFAgentDescription template = new DFAgentDescription();
@@ -62,7 +59,6 @@ public class StockInformationServer extends CyclicBehaviour {
 			ServiceDescription sd = new ServiceDescription();
 			sd.setType("goodbuyers");
 			template.addServices(sd);
-			
 			
 			try {
 				DFAgentDescription[] result = DFService.search(myAgent, template);
@@ -81,7 +77,7 @@ public class StockInformationServer extends CyclicBehaviour {
 					
 				}
 				String s = getDica(date);
-				System.out.println("Dica de hoje: " + s);
+				System.out.println("[StockInformationServer] Dica de hoje: " + s);
 				tips.setContent(s);
 				tips.setConversationId("stoke-tip");
 				myAgent.send(tips);
@@ -102,8 +98,7 @@ public class StockInformationServer extends CyclicBehaviour {
 	}
 
 	private String getDica(String today) {
-		// TODO Auto-generated method stub
-		/* Construção da dica, se atraves de maximos e minimos locais: goog&maximo&17-Nov-16*/
+		/* Construcao da dica, se atraves de maximos e minimos locais: goog&maximo&17-Nov-16*/
 		
 		return stk.newTip(today);
 	}
