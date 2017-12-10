@@ -4,6 +4,8 @@ import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.grid.Grid;
 import sajas.domain.DFService;
 import structures.randomCalc;
 import tradeHero.behaviours.FollowingServer;
@@ -14,6 +16,10 @@ public class UserRandomAgent extends UserAgent {
 
 	public UserRandomAgent() {
 		super();
+	}
+	
+	public UserRandomAgent(ContinuousSpace <Object> space , Grid <Object> grid) {
+		super(space,grid);
 	}
 	
 	

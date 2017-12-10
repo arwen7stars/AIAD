@@ -9,6 +9,8 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.grid.Grid;
 import sajas.core.AID;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.core.behaviours.TickerBehaviour;
@@ -31,6 +33,11 @@ public class UserNormalAgent extends UserAgent {
 	public UserNormalAgent() {
 		super();
 	}
+	
+	public UserNormalAgent(ContinuousSpace <Object> space , Grid <Object> grid) {
+		super(space,grid);
+	}
+	
 	@Override
 	public void setup() {
 		

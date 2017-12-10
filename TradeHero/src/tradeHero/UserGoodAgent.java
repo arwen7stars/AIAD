@@ -9,6 +9,8 @@ import java.util.Map;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.grid.Grid;
 import sajas.domain.DFService;
 import structures.Stock;
 import structures.Tip;
@@ -25,6 +27,11 @@ public class UserGoodAgent extends UserAgent {
 	public UserGoodAgent() {
 		super();
 	}
+	
+	public UserGoodAgent(ContinuousSpace <Object> space , Grid <Object> grid) {
+		super(space,grid);
+	}
+	
 	
 	@Override
 	public void setup() {

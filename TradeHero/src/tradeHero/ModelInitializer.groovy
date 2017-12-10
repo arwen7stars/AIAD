@@ -31,6 +31,7 @@ import repast.simphony.context.space.continuous.*
 import repast.simphony.context.space.gis.*
 import repast.simphony.context.space.graph.*
 import repast.simphony.context.space.grid.*
+import repast.simphony.dataLoader.ContextBuilder
 import repast.simphony.engine.environment.*
 import repast.simphony.engine.schedule.*
 import repast.simphony.engine.watcher.*
@@ -61,72 +62,112 @@ import static repast.simphony.essentials.RepastEssentials.*
  * This is a model initializer.
  *
  */
-public class ModelInitializer  {
+public class ModelInitializer implements ContextBuilder <Object>  {
 
-    /**
-     *
-     * This value is used to automatically generate agent identifiers.
-     * @field serialVersionUID
-     *
-     */
-    private static final long serialVersionUID = 1L
+	/**
+	 *
+	 * This value is used to automatically generate agent identifiers.
+	 * @field serialVersionUID
+	 *
+	 */
+	private static final long serialVersionUID = 1L
 
-    /**
-     *
-     * This value is used to automatically generate agent identifiers.
-     * @field agentIDCounter
-     *
-     */
-    protected static long agentIDCounter = 1
+	/**
+	 *
+	 * This value is used to automatically generate agent identifiers.
+	 * @field agentIDCounter
+	 *
+	 */
+	protected static long agentIDCounter = 1
 
-    /**
-     *
-     * This value is the agent's identifier.
-     * @field agentID
-     *
-     */
-    protected String agentID = "ModelInitializer " + (agentIDCounter++)
+	/**
+	 *
+	 * This value is the agent's identifier.
+	 * @field agentID
+	 *
+	 */
+	protected String agentID = "ModelInitializer " + (agentIDCounter++)
 
-    /**
-     *
-     * This is the user model builder
-     * @method initializeModel
-     *
-     */
-    public def initializeModel() {
+	/**
+	 *
+	 * This is the user model builder
+	 * @method initializeModel
+	 *
+	 */
+	public def initializeModel() {
 
-        // Define the return value variable.
-        def returnValue
+		// Define the return value variable.
+		def returnValue
 
-        // Note the simulation time.
-        def time = GetTickCountInTimeUnits()
+		// Note the simulation time.
+		def time = GetTickCountInTimeUnits()
 
-        // Return the results.
-        return returnValue
+		// Return the results.
+		return returnValue
 
-    }
+	}
 
-    /**
-     *
-     * This method provides a human-readable name for the agent.
-     * @method toString
-     *
-     */
-    @ProbeID()
-    public String toString() {
+	/**
+	 *
+	 * This method provides a human-readable name for the agent.
+	 * @method toString
+	 *
+	 */
+	@ProbeID()
+	public String toString() {
 
-        // Define the return value variable.
-        def returnValue
+		// Define the return value variable.
+		def returnValue
 
-        // Note the simulation time.
-        def time = GetTickCountInTimeUnits()
+		// Note the simulation time.
+		def time = GetTickCountInTimeUnits()
 
-        // Set the default agent identifier.
-        returnValue = this.agentID
-        // Return the results.
-        return returnValue
+		// Set the default agent identifier.
+		returnValue = this.agentID
+		// Return the results.
+		return returnValue
 
-    }
+	}
+
+	@Override
+	public Context build(Context<Object> context) {
+		context.setId("jzombies");
+
+		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>(
+				"stock exchange network", context, true);
+		netBuilder.buildNetwork();
+
+		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder
+				.createContinuousSpaceFactory(null);
+		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace(
+				"space", context, new RandomCartesianAdder<Object>(),
+				new repast.simphony.space.continuous.WrapAroundBorders(), 50,
+				50);
+
+		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
+		Grid<Object> grid = gridFactory.createGrid("grid", context,
+				new GridBuilderParameters<Object>(new WrapAroundBorders(),
+				new SimpleGridAdder<Object>(), true, 50, 50));
+
+		Parameters params = RunEnvironment.getInstance().getParameters();
+		//int zombieCount = (Integer) params.getValue("zombie_count");
+		for (int i = 0; i < 4; i++) {
+			context.add(new UserRandomAgent(space, grid));
+		}
+
+		//int humanCount = (Integer) params.getValue("human_count");
+		for (int i = 0; i < 3; i++) {
+			int energy = RandomHelper.nextIntFromTo(4, 10);
+			context.add(new UserGoodAgent(space, grid));
+		}
+
+		if (RunEnvironment.getInstance().isBatch()) {
+			RunEnvironment.getInstance().endAt(20);
+		}
+
+
+		return context;
+	}
 
 
 }
