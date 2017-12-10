@@ -28,7 +28,6 @@ public class UserGoodAgent extends UserAgent {
 	
 	@Override
 	public void setup() {
-		
 		// Register user service in the yellow pages
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -43,7 +42,6 @@ public class UserGoodAgent extends UserAgent {
 		sd2.setType("goodbuyers");
 		sd2.setName(getLocalName());
 		dfd2.addServices(sd2);
-		
 		
 		try {
 			DFService.register(this, dfd);
@@ -111,15 +109,34 @@ public class UserGoodAgent extends UserAgent {
 			updateGain(gains(stocksPrice));
 		}
 		
-		private int buyAction(Stock stock, int noStocks) {		    
-			if(tips.containsKey(stock.getName())) {
-				
-				Tip stockTip = tips.get(stock.getName());
+		private int buyAction(Stock stock, int noStocks) {			
+			if(scheduled_tips.containsKey(stock.getName())) {
+				Tip stockTip = scheduled_tips.get(stock.getName());
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH);
 				Date date1 = null;
 				Date date2 = null;
-						
+				
+				try {
+					date1 = sdf.parse(today);
+					date2 = sdf.parse(stockTip.getDate());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				
+				if(stockTip.getType().equals("min") && ((date1.after(date2)) || (date1.equals(date2)))) {
+					int maxStocks = ((int)(cash/stock.getValue()));
+					buyStocks(stock.getName(), stock.getValue(), maxStocks);
+				}
+				
+			} else if(tips.containsKey(stock.getName())) {
+				Tip stockTip = tips.get(stock.getName());
+				scheduled_tips.put(stock.getName(), stockTip);
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH);
+				Date date1 = null;
+				Date date2 = null;
+				
 				try {
 					date1 = sdf.parse(today);
 					date2 = sdf.parse(stockTip.getDate());
@@ -132,7 +149,7 @@ public class UserGoodAgent extends UserAgent {
 					System.out.println(getLocalName() + " recebeu uma dica valida!");
 					
 					if(Math.random() <= GOOD_AGENTS_MAX_BUY_ACTION_PROB) {
-						if(stockTip.getType().equals("max")) {
+						if(stockTip.getType().equals("min")) {
 							System.out.println(" I will buy a stock");
 							noStocks = getNoStocks(stock.getValue(), stock, true, true);
 							System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will buy: " +  noStocks + " stocks of value " + stock.getValue());
@@ -141,7 +158,7 @@ public class UserGoodAgent extends UserAgent {
 							
 							System.out.println("I am " +  myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash);
 						}
-					} else if(stockTip.getType().equals("min")) {
+					} else if(stockTip.getType().equals("max")) {
 						System.out.println(" I will buy a stock");
 						noStocks = getNoStocks(stock.getValue(), stock, false, true);
 						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will buy: " +  noStocks + " stocks of value " + stock.getValue());
@@ -158,25 +175,52 @@ public class UserGoodAgent extends UserAgent {
 		
 		private int sellAction(Stock stock, int noStocks) {	
 			noStocks = -1;
-			if(tips.containsKey(stock.getName())) {
-				Tip stockTip = tips.get(stock.getName());
+				
+			if(scheduled_tips.containsKey(stock.getName())) {
+				Tip stockTip = scheduled_tips.get(stock.getName());
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH);
 				Date date1 = null;
 				Date date2 = null;
-						
+				
 				try {
 					date1 = sdf.parse(today);
 					date2 = sdf.parse(stockTip.getDate());
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-			
-				if(date1.after(date2)) {
+				
+				if(stockTip.getType().equals("max") && ((date1.after(date2)) || (date1.equals(date2)))) {
+					int stocksLeft = -1;
+					for(Map.Entry<String, Stock> it : stocksOwned.entrySet()) {
+						if(it.getKey().equals(stockTip.getName())) {
+							stocksLeft = it.getValue().getQuantity();
+							
+						}
+					}
+					sellStocks(stock.getName(), stock.getValue(), stocksLeft);
+				}
+				
+			} else if(tips.containsKey(stock.getName())) {
+				Tip stockTip = tips.get(stock.getName());
+				scheduled_tips.put(stock.getName(), stockTip);
+
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH);
+				Date date1 = null;
+				Date date2 = null;
+				
+				try {
+					date1 = sdf.parse(today);
+					date2 = sdf.parse(stockTip.getDate());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				
+				if(date2.after(date1)) {
 					System.out.println(getLocalName() + " recebeu uma dica valida!");
 
 					if(Math.random() <= GOOD_AGENTS_MAX_SELL_ACTION_PROB) {
-						if(stockTip.type.equals("max")) {
+						if(stockTip.type.equals("min")) {
 							noStocks = getNoStocks(stock.getValue(), stock, true, false);
 							System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will sell: " +  noStocks + " stocks of value " + stock.getValue());
 	
@@ -184,7 +228,7 @@ public class UserGoodAgent extends UserAgent {
 							
 							System.out.println("I am " + getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash  + " ; SavedValue: " + stocksOwned.get(stock.getName()).getSavedValue());
 						}
-					} else if(stockTip.type.equals("min")) {
+					} else if(stockTip.type.equals("max")) {
 						noStocks = getNoStocks(stock.getValue(), stock, false, false);						
 						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will sell: " +  noStocks + " stocks of value " + stock.getValue());
 
@@ -199,8 +243,6 @@ public class UserGoodAgent extends UserAgent {
 			
 			return noStocks;
 		}
-		
-		 
 		
 		private int getNoStocks(double actualPrice, Stock stockTip, boolean type, boolean buy) {
 			int noStocks = -1;

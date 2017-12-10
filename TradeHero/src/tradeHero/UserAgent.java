@@ -15,13 +15,12 @@ public class UserAgent extends Agent {
 	 * 	Agent agent = new Agent();
 		agent.getAID();
 	 */
-	protected double cash = 100000.0;												// quantidade de dinheiro que o utilizador tem no inicio
-														// numero de seguidores determina quanto o utilizador vai receber de premiacao
-	protected double gain_rate;														// media de ganhos
-	protected ArrayList<AID> followers = new ArrayList<AID>();				    	// se o utilizador seguir alguem, vai receber "dicas" de investimento desse utilizador
-	//protected ArrayList<AID> following = new ArrayList<AID>();
+	protected double cash = 100000.0;											// quantidade de dinheiro que o utilizador tem no inicio
+	protected double gain_rate;													// media de ganhos
+	protected ArrayList<AID> followers = new ArrayList<AID>();				    // se o utilizador seguir alguem, vai receber "dicas" de investimento desse utilizador
 	protected Map<String, Stock> stocksOwned = new HashMap<String, Stock>();	// numero de stocks possu�dos e de que empresas foram comprados
 	protected Map<String, Tip> tips = new HashMap<String, Tip>();
+	protected Map<String, Tip> scheduled_tips = new HashMap<String, Tip>();
 	private Map<String, Double> ROC = new HashMap<String, Double>();
 	
 	public static  ArrayList<Stock> stocksPrice;

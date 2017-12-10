@@ -72,7 +72,7 @@ public class StockInformationServer extends CyclicBehaviour {
 					goodAgents[i] = result[i].getName();
 				}
 				
-				/* Seleção */
+				/* Selecao */
 				goodAgents = randomCalc.getRandomGoodAgents(goodAgents);
 				
 				ACLMessage tips = new ACLMessage(ACLMessage.INFORM);
