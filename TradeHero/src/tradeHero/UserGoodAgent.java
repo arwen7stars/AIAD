@@ -112,7 +112,6 @@ public class UserGoodAgent extends UserAgent {
 		private int buyAction(Stock stock, int noStocks) {			
 			if(scheduled_tips.containsKey(stock.getName())) {
 				Tip stockTip = scheduled_tips.get(stock.getName());
-				
 				SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH);
 				Date date1 = null;
 				Date date2 = null;
@@ -125,8 +124,13 @@ public class UserGoodAgent extends UserAgent {
 				}
 				
 				if(stockTip.getType().equals("min") && ((date1.after(date2)) || (date1.equals(date2)))) {
+					System.out.println(" I will buy a stock");
+
 					int maxStocks = ((int)(cash/stock.getValue()));
+					System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will buy: " +  maxStocks + " stocks of value " + stock.getValue());
+
 					buyStocks(stock.getName(), stock.getValue(), maxStocks);
+					System.out.println("I am " +  myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash);
 				}
 				
 			} else if(tips.containsKey(stock.getName())) {
@@ -149,7 +153,7 @@ public class UserGoodAgent extends UserAgent {
 					System.out.println(getLocalName() + " recebeu uma dica valida!");
 					
 					if(Math.random() <= GOOD_AGENTS_MAX_BUY_ACTION_PROB) {
-						if(stockTip.getType().equals("min")) {
+						if(stockTip.getType().equals("max")) {
 							System.out.println(" I will buy a stock");
 							noStocks = getNoStocks(stock.getValue(), stock, true, true);
 							System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will buy: " +  noStocks + " stocks of value " + stock.getValue());
@@ -157,8 +161,8 @@ public class UserGoodAgent extends UserAgent {
 							buyStocks(stock.getName(), stock.getValue(), noStocks);
 							
 							System.out.println("I am " +  myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash);
-						}
-					} else if(stockTip.getType().equals("max")) {
+						} else return -1;
+					} else if(stockTip.getType().equals("min")) {
 						System.out.println(" I will buy a stock");
 						noStocks = getNoStocks(stock.getValue(), stock, false, true);
 						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will buy: " +  noStocks + " stocks of value " + stock.getValue());
@@ -166,8 +170,8 @@ public class UserGoodAgent extends UserAgent {
 						buyStocks(stock.getName(), stock.getValue(), noStocks);
 						
 						System.out.println("I am " +  myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash);
-					}
-				}
+					} else return -1;
+				} else return -1;
 			} else return -1;
 			
 			return noStocks;
@@ -189,7 +193,7 @@ public class UserGoodAgent extends UserAgent {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				
+
 				if(stockTip.getType().equals("max") && ((date1.after(date2)) || (date1.equals(date2)))) {
 					int stocksLeft = -1;
 					for(Map.Entry<String, Stock> it : stocksOwned.entrySet()) {
@@ -198,7 +202,12 @@ public class UserGoodAgent extends UserAgent {
 							
 						}
 					}
+
+					System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will sell: " +  stocksLeft + " stocks of value " + stock.getValue());
+
 					sellStocks(stock.getName(), stock.getValue(), stocksLeft);
+					System.out.println("I am " + getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash  + " ; SavedValue: " + stocksOwned.get(stock.getName()).getSavedValue());
+
 				}
 				
 			} else if(tips.containsKey(stock.getName())) {
@@ -220,15 +229,15 @@ public class UserGoodAgent extends UserAgent {
 					System.out.println(getLocalName() + " recebeu uma dica valida!");
 
 					if(Math.random() <= GOOD_AGENTS_MAX_SELL_ACTION_PROB) {
-						if(stockTip.type.equals("min")) {
+						if(stockTip.type.equals("max")) {
 							noStocks = getNoStocks(stock.getValue(), stock, true, false);
 							System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will sell: " +  noStocks + " stocks of value " + stock.getValue());
 	
 							sellStocks(stock.getName(), stock.getValue(), noStocks);
 							
 							System.out.println("I am " + getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash  + " ; SavedValue: " + stocksOwned.get(stock.getName()).getSavedValue());
-						}
-					} else if(stockTip.type.equals("max")) {
+						} else return -1;
+					} else if(stockTip.type.equals("min")) {
 						noStocks = getNoStocks(stock.getValue(), stock, false, false);						
 						System.out.println("I am " + myAgent.getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash + " ; I will sell: " +  noStocks + " stocks of value " + stock.getValue());
 
@@ -236,9 +245,9 @@ public class UserGoodAgent extends UserAgent {
 						
 						System.out.println("I am " + getLocalName() + " ; I have: " + ((UserAgent)myAgent).cash  + " ; SavedValue: " + stocksOwned.get(stock.getName()).getSavedValue());
 
-					}
+					} else return -1;
 
-				}
+				} else return -1;
 			} else return -1;
 			
 			return noStocks;
@@ -276,14 +285,14 @@ public class UserGoodAgent extends UserAgent {
 						
 					}
 				}
-				noStocks = ((int)(10*elapsedValue*stocksLeft));
+				noStocks = ((int)(5*elapsedValue*stocksLeft));
 				
 				if(noStocks < 1) {
 					if(stocksLeft > 5) {
 						noStocks = 5;
 					} else noStocks = stocksLeft;
 				} else if(noStocks > stocksLeft) {
-					noStocks = ((int)(0.8*stocksLeft));
+					noStocks = ((int)(0.5*stocksLeft));
 				}
 			}
 			return noStocks;

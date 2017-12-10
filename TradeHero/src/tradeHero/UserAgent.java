@@ -155,6 +155,7 @@ public class UserAgent extends Agent {
 	
 	
 	public void addTip(ACLMessage msg) {
+
 		String[] parts = msg.getContent().split("&");
 		String name = parts[0];
 		String type = parts[1];
@@ -162,6 +163,7 @@ public class UserAgent extends Agent {
 		double value = Double.parseDouble(parts[3]);
 		
 		Tip receivedTip = new Tip(name, type, date, value);
+
 		tips.put(name, receivedTip);
 	}
 	
