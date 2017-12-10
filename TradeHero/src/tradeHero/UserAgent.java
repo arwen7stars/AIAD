@@ -168,7 +168,13 @@ public class UserAgent extends Agent {
 	}
 	
 		
+	public String followersToString() {
+		String s = "";
+		for(int i = 0; i < followers.size(); i++)
+			s += followers.get(i).getLocalName() + "\n";
 		
+		return s == "" ? "none" : s;
+	}
 
 		
 		
