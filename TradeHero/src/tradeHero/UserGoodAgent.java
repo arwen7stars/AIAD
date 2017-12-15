@@ -105,7 +105,7 @@ public class UserGoodAgent extends UserAgent {
 			if(!s.equals("")) {
 				alertFollowers(s);
 				
-			}		
+			}
 			updateGain(gains(stocksPrice));
 		}
 		

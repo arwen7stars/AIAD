@@ -92,7 +92,7 @@ public abstract class ReceiveStockUpdate extends CyclicBehaviour {
 	/* Informs Market  */
 	public void updateGain(double gain) {
 		/* Common to all users */
-		 
+		myUserAgent.setGain_rate(gain);
 		DFAgentDescription template = new DFAgentDescription();
 		
 		ServiceDescription sd = new ServiceDescription();

@@ -16,7 +16,7 @@ public class UserAgent extends Agent {
 		agent.getAID();
 	 */
 	protected double cash = 100000.0;											// quantidade de dinheiro que o utilizador tem no inicio
-	protected double gain_rate;													// media de ganhos
+	protected double gain_rate = 0;													// media de ganhos
 	protected ArrayList<AID> followers = new ArrayList<AID>();				    // se o utilizador seguir alguem, vai receber "dicas" de investimento desse utilizador
 	protected Map<String, Stock> stocksOwned = new HashMap<String, Stock>();	// numero de stocks possu�dos e de que empresas foram comprados
 	protected Map<String, Tip> tips = new HashMap<String, Tip>();
@@ -175,10 +175,10 @@ public class UserAgent extends Agent {
 		
 		return s == "" ? "none" : s;
 	}
-
 		
-		
-	
+	public int getNoFollowers() {
+		return followers.size();
+	}
 	
 	
 }

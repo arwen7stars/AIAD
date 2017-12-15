@@ -1,5 +1,5 @@
-<repast.simphony.visualization.engine.CartesianDisplayDescriptor simphonyVersion="2.5.0">
-  <name>New Display</name>
+<repast.simphony.visualization.engine.CartesianDisplayDescriptor>
+  <name>TradeHeroDisplay</name>
   <type>2D</type>
   <styles>
     <entry>
@@ -60,12 +60,12 @@
   <frequency>ON_NEW</frequency>
   <schedParams>
     <start>1.0</start>
-    <interval>1.0</interval>
+    <interval>50.0</interval>
     <priority>-Infinity</priority>
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1625077148</hashCode>
+    <hashCode>248738682</hashCode>
   </schedParams>
   <layoutClassName>repast.simphony.visualization.visualization2D.Random2DLayout</layoutClassName>
   <layoutProjection>TradeHero network</layoutProjection>

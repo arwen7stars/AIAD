@@ -1,27 +1,72 @@
-<repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.5.0">
-  <name>A Data Set</name>
-  <type>NON_AGGREGATE</type>
-  <sourceType>tradeHero.UserAgent</sourceType>
+<repast.simphony.data2.engine.DataSetDescriptor>
+  <name>TradeHeroDataSet</name>
+  <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>false</inclBatchRun>
   <inclRandomSeed>false</inclRandomSeed>
   <scheduleParams>
     <start>1.0</start>
-    <interval>1.0</interval>
+    <interval>50.0</interval>
     <priority>-Infinity</priority>
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1360894903</hashCode>
+    <hashCode>248738682</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>followersToString</string>
+      <string>GoodAgent Gain Rate</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>followersToString</id>
-        <className>tradeHero.UserAgent</className>
-        <methodName>followersToString</methodName>
+        <id>GoodAgent Gain Rate</id>
+        <className>tradeHero.UserGoodAgent</className>
+        <methodName>getGain_rate</methodName>
+        <aggType>MEAN</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>NormalAgent Gain Rate</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>NormalAgent Gain Rate</id>
+        <className>tradeHero.UserNormalAgent</className>
+        <methodName>getGain_rate</methodName>
+        <aggType>MEAN</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>RandomAgent Gain Rate</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>RandomAgent Gain Rate</id>
+        <className>tradeHero.UserRandomAgent</className>
+        <methodName>getGain_rate</methodName>
+        <aggType>MEAN</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>GoodAgent Cash</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>GoodAgent Cash</id>
+        <className>tradeHero.UserGoodAgent</className>
+        <methodName>getCash</methodName>
+        <aggType>MEAN</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>NormalAgent Cash</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>NormalAgent Cash</id>
+        <className>tradeHero.UserNormalAgent</className>
+        <methodName>getCash</methodName>
+        <aggType>MEAN</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>RandomAgent Cash</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>RandomAgent Cash</id>
+        <className>tradeHero.UserRandomAgent</className>
+        <methodName>getCash</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
   </methodDataSources>
